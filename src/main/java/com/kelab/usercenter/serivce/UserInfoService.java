@@ -1,8 +1,9 @@
 package com.kelab.usercenter.serivce;
 
+import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.dal.model.UserInfoModel;
 
 public interface UserInfoService {
 
-    UserInfoModel login(String username, String password);
+    UserInfoDomain login(String username, String password);
 }

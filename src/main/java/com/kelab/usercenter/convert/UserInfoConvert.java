@@ -22,7 +22,7 @@ public class UserInfoConvert {
      * @param domain domain
      * @return model
      */
-    public static UserInfoModel modelToDomain(UserInfoDomain domain) {
+    public static UserInfoModel domainToModel(UserInfoDomain domain) {
         UserInfoModel model = new UserInfoModel();
         BeanUtils.copyProperties(model, domain);
         return model;

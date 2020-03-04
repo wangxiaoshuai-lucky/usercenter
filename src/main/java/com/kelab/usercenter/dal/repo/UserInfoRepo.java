@@ -1,5 +1,6 @@
 package com.kelab.usercenter.dal.repo;
 
+import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.dal.model.UserInfoModel;
 
 public interface UserInfoRepo {
@@ -9,5 +10,5 @@ public interface UserInfoRepo {
      * @param id
      * @return
      */
-    UserInfoModel queryById(Integer id);
+    UserInfoDomain queryById(Integer id);
 }
