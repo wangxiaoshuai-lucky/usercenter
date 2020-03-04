@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kelab.usercenter.dal.dao.UserSubmitInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.UserSubmitInfoModel">
+        <id column="id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="ac_num" property="acNum" jdbcType="INTEGER"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, submit_num, ac_num
+    </sql>
+
+
+    <select id="queryByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from User_submit_info
+        where user_id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+</mapper>

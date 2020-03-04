@@ -1,6 +1,6 @@
-package com.kelab.usercenter.repo.model;
+package com.kelab.usercenter.dal.model;
 
-public class UserInfo {
+public class UserInfoModel {
     private Integer id;
 
     private String username;
@@ -162,6 +162,6 @@ public class UserInfo {
         this.roleId = roleId;
     }
 
-    public UserInfo() {
+    public UserInfoModel() {
     }
 }
