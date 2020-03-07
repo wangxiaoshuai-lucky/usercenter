@@ -1,6 +1,6 @@
-package com.kelab.usercenter.dal.model;
+package com.kelab.usercenter.dal.domain;
 
-public class UserSubmitInfoModel {
+public class UserSubmitInfoDomain {
 
     private Integer id;
 
@@ -42,6 +42,6 @@ public class UserSubmitInfoModel {
         this.id = id;
     }
 
-    public UserSubmitInfoModel() {
+    public UserSubmitInfoDomain() {
     }
 }

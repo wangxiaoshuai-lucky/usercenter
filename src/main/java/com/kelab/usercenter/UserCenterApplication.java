@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableVerify
-@MapperScan(basePackages = "com.kelab.usercenter.repo.dao")
+@MapperScan(basePackages = "com.kelab.usercenter.dal.dao")
 public class UserCenterApplication {
 
     public static AppSetting appSetting = new AppSetting();

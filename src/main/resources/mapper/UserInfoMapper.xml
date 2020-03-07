@@ -8,8 +8,6 @@
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
-        <result column="submit_num" property="submitNum" jdbcType="INTEGER"/>
-        <result column="ac_num" property="acNum" jdbcType="INTEGER"/>
         <result column="real_name" property="realName" jdbcType="VARCHAR"/>
         <result column="school" property="school" jdbcType="VARCHAR"/>
         <result column="institution" property="institution" jdbcType="VARCHAR"/>
@@ -23,16 +21,23 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, username, email, password, submit_num, ac_num, real_name, school, institution,
-        student_id, student_class, qq, avatar, sign, phone_number, role_id
+        `id`, `username`, `email`, `password`, `real_name`, `school`, `institution`,
+        `student_id`, `student_class`, `qq`, `avatar`, `sign`, `phone_number`, `role_id`
     </sql>
 
 
     <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from User_info
-        where id = #{id,jdbcType=INTEGER}
+        from `User_info`
+        where `id` = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from `User_info`
+        where `username` = #{username,jdbcType=INTEGER}
     </select>
 
 

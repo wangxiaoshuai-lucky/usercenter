@@ -4,17 +4,25 @@ import com.kelab.util.ymlparse.annotation.Yaml;
 
 public class AppSetting {
 
-    @Yaml("server.port")
-    public String port;
+    @Yaml("jwt.secret_key")
+    public String secretKey;
 
-    @Yaml("spring.application.name")
-    public String appName;
+    @Yaml("jwt.millisecond")
+    public Integer millisecond;
+
+    @Yaml("jwt.jwt_issuer")
+    public String jwtIssuer;
+
+    @Yaml("jwt.jwt_aud")
+    public String jwtAud;
 
     @Override
     public String toString() {
         return "AppSetting{" +
-                "port='" + port + '\'' +
-                ", appName='" + appName + '\'' +
+                "secretKey='" + secretKey + '\'' +
+                ", millisecond=" + millisecond +
+                ", jwtIssuer='" + jwtIssuer + '\'' +
+                ", jwtAud='" + jwtAud + '\'' +
                 '}';
     }
 }

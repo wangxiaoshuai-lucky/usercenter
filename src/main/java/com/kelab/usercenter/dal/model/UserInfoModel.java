@@ -9,10 +9,6 @@ public class UserInfoModel {
 
     private String password;
 
-    private Integer submitNum;
-
-    private Integer acNum;
-
     private String realName;
 
     private String school;
@@ -64,22 +60,6 @@ public class UserInfoModel {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Integer getSubmitNum() {
-        return submitNum;
-    }
-
-    public void setSubmitNum(Integer submitNum) {
-        this.submitNum = submitNum;
-    }
-
-    public Integer getAcNum() {
-        return acNum;
-    }
-
-    public void setAcNum(Integer acNum) {
-        this.acNum = acNum;
     }
 
     public String getRealName() {

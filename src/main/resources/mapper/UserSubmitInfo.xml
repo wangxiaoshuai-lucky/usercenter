@@ -7,19 +7,19 @@
         <id column="id" property="userId" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="ac_num" property="acNum" jdbcType="INTEGER"/>
-        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="submit_num" property="submitNum" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, user_id, submit_num, ac_num
+        `id`, `user_id`, `ac_num`, `submit_num`
     </sql>
 
 
     <select id="queryByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from User_submit_info
-        where user_id = #{id,jdbcType=INTEGER}
+        from `User_submit_info`
+        where `user_id` = #{userId,jdbcType=INTEGER}
     </select>
 
 

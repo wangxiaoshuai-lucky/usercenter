@@ -10,10 +10,6 @@ public class UserInfoDomain {
 
     private String password;
 
-    private Integer submitNum;
-
-    private Integer acNum;
-
     private String realName;
 
     private String school;
@@ -33,6 +29,16 @@ public class UserInfoDomain {
     private String phoneNumber;
 
     private Integer roleId;
+
+    private UserSubmitInfoDomain submitInfo;
+
+    public UserSubmitInfoDomain getSubmitInfo() {
+        return submitInfo;
+    }
+
+    public void setSubmitInfo(UserSubmitInfoDomain submitInfo) {
+        this.submitInfo = submitInfo;
+    }
 
     public Integer getId() {
         return id;
@@ -64,22 +70,6 @@ public class UserInfoDomain {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Integer getSubmitNum() {
-        return submitNum;
-    }
-
-    public void setSubmitNum(Integer submitNum) {
-        this.submitNum = submitNum;
-    }
-
-    public Integer getAcNum() {
-        return acNum;
-    }
-
-    public void setAcNum(Integer acNum) {
-        this.acNum = acNum;
     }
 
     public String getRealName() {
