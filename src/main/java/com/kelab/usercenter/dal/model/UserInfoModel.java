@@ -142,6 +142,4 @@ public class UserInfoModel {
         this.roleId = roleId;
     }
 
-    public UserInfoModel() {
-    }
 }

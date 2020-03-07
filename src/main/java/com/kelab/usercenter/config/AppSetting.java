@@ -4,11 +4,14 @@ import com.kelab.util.ymlparse.annotation.Yaml;
 
 public class AppSetting {
 
+    @Yaml("cache.millisecond")
+    public Long cacheMillisecond;
+
     @Yaml("jwt.secret_key")
     public String secretKey;
 
     @Yaml("jwt.millisecond")
-    public Integer millisecond;
+    public Integer jwtMillisecond;
 
     @Yaml("jwt.jwt_issuer")
     public String jwtIssuer;
@@ -19,8 +22,9 @@ public class AppSetting {
     @Override
     public String toString() {
         return "AppSetting{" +
-                "secretKey='" + secretKey + '\'' +
-                ", millisecond=" + millisecond +
+                "cacheMillisecond=" + cacheMillisecond +
+                ", secretKey='" + secretKey + '\'' +
+                ", millisecond=" + jwtMillisecond +
                 ", jwtIssuer='" + jwtIssuer + '\'' +
                 ", jwtAud='" + jwtAud + '\'' +
                 '}';

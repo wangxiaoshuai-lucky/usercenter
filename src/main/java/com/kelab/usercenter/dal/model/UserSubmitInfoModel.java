@@ -42,6 +42,4 @@ public class UserSubmitInfoModel {
         this.id = id;
     }
 
-    public UserSubmitInfoModel() {
-    }
 }

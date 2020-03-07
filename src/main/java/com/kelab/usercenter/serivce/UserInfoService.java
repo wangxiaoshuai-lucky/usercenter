@@ -6,4 +6,5 @@ import com.kelab.info.usercenter.LoginResult;
 public interface UserInfoService {
 
     LoginResult login(Context context, String username, String password, String verifyCode, String uuid);
+
 }
