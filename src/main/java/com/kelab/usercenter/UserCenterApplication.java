@@ -2,7 +2,6 @@ package com.kelab.usercenter;
 
 import cn.wzy.verifyUtils.annotation.EnableVerify;
 import com.kelab.usercenter.config.AppSetting;
-import com.kelab.util.ymlparse.DataSetter;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,12 +13,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @MapperScan(basePackages = "com.kelab.usercenter.dal.dao")
 public class UserCenterApplication {
 
-    public static AppSetting appSetting = new AppSetting();
-
-    public static void main(String[] args) throws Exception {
-        DataSetter.setData("application.yml", appSetting);
-        System.out.println(appSetting);
+    public static void main(String[] args) {
         SpringApplication.run(UserCenterApplication.class, args);
+        System.out.println("#### 配置文件加载完毕 ：" + new AppSetting());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.kelab.usercenter.dal.redis;
 
-import com.kelab.usercenter.UserCenterApplication;
+import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.CacheConstant;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class RedisCache {
 
     public void set(CacheConstant bizName, String key, String value) {
         try {
-            redisTemplate.opsForValue().set(bizName + key, value, UserCenterApplication.appSetting.cacheMillisecond, TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(bizName + key, value, AppSetting.cacheMillisecond, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();
         }

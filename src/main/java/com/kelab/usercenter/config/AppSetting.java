@@ -1,23 +1,47 @@
 package com.kelab.usercenter.config;
 
-import com.kelab.util.ymlparse.annotation.Yaml;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Component;
 
+@Component
+@EnableConfigurationProperties
 public class AppSetting {
 
-    @Yaml("cache.millisecond")
-    public Long cacheMillisecond;
+    public static Long cacheMillisecond;
 
-    @Yaml("jwt.secret_key")
-    public String secretKey;
+    public static String secretKey;
 
-    @Yaml("jwt.millisecond")
-    public Integer jwtMillisecond;
+    public static Integer jwtMillisecond;
 
-    @Yaml("jwt.jwt_issuer")
-    public String jwtIssuer;
+    public static String jwtIssuer;
 
-    @Yaml("jwt.jwt_aud")
-    public String jwtAud;
+    public static String jwtAud;
+
+    @Value("${cache.millisecond}")
+    public void setCacheMillisecond(Long cacheMillisecond) {
+        AppSetting.cacheMillisecond = cacheMillisecond;
+    }
+
+    @Value("${jwt.secret_key}")
+    public void setSecretKey(String secretKey) {
+        AppSetting.secretKey = secretKey;
+    }
+
+    @Value("${jwt.millisecond}")
+    public void setJwtMillisecond(Integer jwtMillisecond) {
+        AppSetting.jwtMillisecond = jwtMillisecond;
+    }
+
+    @Value("${jwt.jwt_issuer}")
+    public void setJwtIssuer(String jwtIssuer) {
+        AppSetting.jwtIssuer = jwtIssuer;
+    }
+
+    @Value("${jwt.jwt_aud}")
+    public void setJwtAud(String jwtAud) {
+        AppSetting.jwtAud = jwtAud;
+    }
 
     @Override
     public String toString() {

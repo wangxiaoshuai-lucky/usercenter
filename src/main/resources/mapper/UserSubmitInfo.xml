@@ -4,7 +4,7 @@
 <mapper namespace="com.kelab.usercenter.dal.dao.UserSubmitInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.UserSubmitInfoModel">
-        <id column="id" property="userId" jdbcType="INTEGER"/>
+        <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="ac_num" property="acNum" jdbcType="INTEGER"/>
         <result column="submit_num" property="submitNum" jdbcType="INTEGER"/>
@@ -13,6 +13,11 @@
     <sql id="Base_Column_List">
         `id`, `user_id`, `ac_num`, `submit_num`
     </sql>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into `User_submit_info` (`id`, `user_id`, `ac_num`, `submit_num`)
+        values (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.acNum,jdbcType=INTEGER}, #{record.submitNum,jdbcType=INTEGER})
+    </insert>
 
 
     <select id="queryByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">

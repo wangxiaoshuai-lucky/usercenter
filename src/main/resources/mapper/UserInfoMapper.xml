@@ -25,6 +25,18 @@
         `student_id`, `student_class`, `qq`, `avatar`, `sign`, `phone_number`, `role_id`
     </sql>
 
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into `User_info` (`id`, `username`, `email`,
+                                 `password`, `real_name`, `school`, `institution`,
+                                 `student_id`, `student_class`, `qq`,
+                                 `avatar`, `sign`, `phone_number`, `role_id`)
+        values (#{record.id,jdbcType=INTEGER}, #{record.username,jdbcType=VARCHAR}, #{record.email,jdbcType=VARCHAR},
+                #{record.password,jdbcType=VARCHAR}, #{record.realName,jdbcType=VARCHAR}, #{record.school,jdbcType=VARCHAR},
+                #{record.institution,jdbcType=VARCHAR}, #{record.studentId,jdbcType=VARCHAR}, #{record.studentClass,jdbcType=VARCHAR},
+                #{record.qq,jdbcType=VARCHAR}, #{record.avatar,jdbcType=VARCHAR}, #{record.sign,jdbcType=VARCHAR},
+                #{record.phoneNumber,jdbcType=VARCHAR}, #{record.roleId,jdbcType=INTEGER})
+    </insert>
+
 
     <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -38,6 +50,18 @@
         <include refid="Base_Column_List"/>
         from `User_info`
         where `username` = #{username,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryByStudentId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from `User_info`
+        where `username` = #{studentId,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select count(*)
+        from `User_info`
     </select>
 
 

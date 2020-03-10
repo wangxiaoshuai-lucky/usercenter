@@ -11,8 +11,7 @@ import com.kelab.util.verifycode.VerifyCodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class VerifyCodeController {
      *
      * @return
      */
-    @RequestMapping(value = "/pic.do", method = {RequestMethod.GET})
+    @GetMapping("/pic.do")
     public JsonAndModel verifyPic(Context context) throws IOException {
         VerifyCodeUtils.ImgResult imgResult = VerifyCodeUtils.VerifyCode(80, 30, 4);
         redisCache.set(CacheConstant.VERIFY_CODE, imgResult.getUuid(), imgResult.getCode());

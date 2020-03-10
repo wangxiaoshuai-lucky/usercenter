@@ -1,6 +1,7 @@
 package com.kelab.usercenter.serivce.impl;
 
 import com.kelab.usercenter.UserCenterApplication;
+import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.CacheConstant;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.usercenter.serivce.OnlineService;
@@ -23,7 +24,7 @@ public class OnlineServiceImpl implements OnlineService {
     public void online(Integer userId) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.MILLISECOND, UserCenterApplication.appSetting.jwtMillisecond);
+        calendar.add(Calendar.MILLISECOND, AppSetting.jwtMillisecond);
         double score = calendar.getTimeInMillis();
         redisCache.zAdd(CacheConstant.ONLINE_USER, "", String.valueOf(userId), score);
     }

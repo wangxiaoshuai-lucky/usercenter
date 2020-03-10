@@ -11,4 +11,9 @@ public interface UserInfoMapper {
 
     UserInfoModel queryByUsername(@Param("username") String username);
 
+    UserInfoModel queryByStudentId(@Param("studentId") String StudentId);
+
+    Integer queryTotal();
+
+    void save(@Param("record") UserInfoModel record);
 }

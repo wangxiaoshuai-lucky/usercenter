@@ -10,8 +10,6 @@ public class UserSubmitInfoConvert {
 
     /**
      * model to domain
-     * @param model model
-     * @return domain
      */
     public static UserSubmitInfoDomain modelToDomain(UserSubmitInfoModel model) {
         if (model == null) {
@@ -24,15 +22,13 @@ public class UserSubmitInfoConvert {
 
     /**
      * domain to model
-     * @param domain domain
-     * @return model
      */
     public static UserSubmitInfoModel domainToModel(UserSubmitInfoDomain domain) {
         if (domain == null) {
             return null;
         }
         UserSubmitInfoModel model = new UserSubmitInfoModel();
-        BeanUtils.copyProperties(model, domain);
+        BeanUtils.copyProperties(domain, model);
         return model;
     }
 }
