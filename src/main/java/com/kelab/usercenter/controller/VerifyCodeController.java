@@ -5,7 +5,7 @@ import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.constant.BaseRetCodeConstant;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.VerifyCodeInfo;
-import com.kelab.usercenter.constant.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheConstant;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.util.verifycode.VerifyCodeUtils;
 import org.slf4j.Logger;

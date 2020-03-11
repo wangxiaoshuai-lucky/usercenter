@@ -2,12 +2,14 @@ package com.kelab.usercenter.controller;
 
 import cn.wzy.verifyUtils.annotation.Verify;
 import com.kelab.info.base.JsonAndModel;
+import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.LoginResult;
 import com.kelab.info.usercenter.UserInfo;
-import com.kelab.usercenter.UserCenterApplication;
 import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.StatusMsgConstant;
+import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.resultVO.SingleResult;
 import com.kelab.usercenter.serivce.OnlineService;
 import com.kelab.usercenter.serivce.UserInfoService;
@@ -66,10 +68,16 @@ public class UserController {
     /**
      * 用户总数接口
      */
-    @GetMapping(value = "/user/total.do")
+    @GetMapping("/user/total.do")
     public JsonAndModel countTotalUser(Context context) {
         SingleResult<Integer> sr = this.userInfoService.queryTotal(context);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).data(sr).build();
+    }
+
+    @GetMapping("/user/submit/statistic.do")
+    public JsonAndModel submitStatistic(Context context, PageQuery pageQuery, Integer timeType) {
+        PaginationResult<UserInfo> result = userInfoService.submitStatistic(context, pageQuery, TimeType.valueOf(timeType));
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).data(result).build();
     }
 
     private String tokens(LoginResult result) {

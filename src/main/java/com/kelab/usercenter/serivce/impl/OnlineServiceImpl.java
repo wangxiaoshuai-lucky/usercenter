@@ -1,8 +1,7 @@
 package com.kelab.usercenter.serivce.impl;
 
-import com.kelab.usercenter.UserCenterApplication;
 import com.kelab.usercenter.config.AppSetting;
-import com.kelab.usercenter.constant.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheConstant;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.usercenter.serivce.OnlineService;
 import org.springframework.beans.factory.annotation.Autowired;

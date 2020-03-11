@@ -10,6 +10,9 @@ import com.kelab.usercenter.dal.repo.UserSubmitInfoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Repository
 public class UserInfoRepoImpl implements UserInfoRepo {
 
@@ -24,19 +27,30 @@ public class UserInfoRepoImpl implements UserInfoRepo {
         this.userSubmitInfoRepo = userSubmitInfoRepo;
     }
 
-    public UserInfoDomain queryById(Integer id, boolean withSubmitInfo) {
-        UserInfoDomain domain = UserInfoConvert.modelToDomain(userInfoMapper.queryById(id));
-        if (domain != null && withSubmitInfo) {
-            domain.setSubmitInfo(userSubmitInfoRepo.queryByUserId(domain.getId()));
+    public List<UserInfoDomain> queryByIds(List<Integer> ids, boolean withSubmitInfo) {
+        List<UserInfoModel> userInfoModels = userInfoMapper.queryByIds(ids);
+        if (userInfoModels == null || userInfoModels.size() == 0) {
+            return Collections.emptyList();
         }
-        return domain;
+        List<UserInfoDomain> domains = new ArrayList<>(userInfoModels.size());
+        userInfoModels.forEach(item -> domains.add(UserInfoConvert.modelToDomain(item)));
+        if (withSubmitInfo) {
+            List<Integer> userIds = userInfoModels.stream().map(UserInfoModel::getId).collect(Collectors.toList());
+            List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(userIds);
+            Map<Integer, UserSubmitInfoDomain> submitInfoDomainMap = userSubmitInfoDomains
+                    .stream()
+                    .collect(Collectors.toMap(UserSubmitInfoDomain::getUserId, (obj) -> obj));
+            domains.forEach(item -> item.setSubmitInfo(submitInfoDomainMap.get(item.getId())));
+        }
+        return domains;
     }
 
     @Override
     public UserInfoDomain queryByUsername(String username, boolean withSubmitInfo) {
         UserInfoDomain domain = UserInfoConvert.modelToDomain(userInfoMapper.queryByUsername(username));
         if (domain != null && withSubmitInfo) {
-            domain.setSubmitInfo(userSubmitInfoRepo.queryByUserId(domain.getId()));
+            List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(Collections.singletonList(domain.getId()));
+            domain.setSubmitInfo(userSubmitInfoDomains.get(0));
         }
         return domain;
     }
@@ -45,7 +59,8 @@ public class UserInfoRepoImpl implements UserInfoRepo {
     public UserInfoDomain queryByStudentId(String studentId, boolean withSubmitInfo) {
         UserInfoDomain domain = UserInfoConvert.modelToDomain(userInfoMapper.queryByStudentId(studentId));
         if (domain != null && withSubmitInfo) {
-            domain.setSubmitInfo(userSubmitInfoRepo.queryByUserId(domain.getId()));
+            List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(Collections.singletonList(domain.getId()));
+            domain.setSubmitInfo(userSubmitInfoDomains.get(0));
         }
         return domain;
     }

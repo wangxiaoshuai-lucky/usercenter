@@ -50,4 +50,21 @@ public class UserInfoConvert {
         }
         return domain;
     }
+
+    /**
+     * domain to info
+     */
+    public static UserInfo domainToInfo(UserInfoDomain userInfoDomain) {
+        if (userInfoDomain == null) {
+            return null;
+        }
+        UserInfo info = new UserInfo();
+        BeanUtils.copyProperties(userInfoDomain, info);
+        if (userInfoDomain.getSubmitInfo() != null) {
+            UserSubmitInfoDomain submitInfoDomain = userInfoDomain.getSubmitInfo();
+            info.setAcNum(submitInfoDomain.getAcNum());
+            info.setSubmitNum(submitInfoDomain.getSubmitNum());
+        }
+        return info;
+    }
 }

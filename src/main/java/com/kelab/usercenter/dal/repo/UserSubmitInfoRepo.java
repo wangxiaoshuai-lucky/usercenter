@@ -2,12 +2,14 @@ package com.kelab.usercenter.dal.repo;
 
 import com.kelab.usercenter.dal.domain.UserSubmitInfoDomain;
 
+import java.util.List;
+
 public interface UserSubmitInfoRepo {
 
     /**
      * 通过 userId 查询用户提交情况
      */
-    UserSubmitInfoDomain queryByUserId(Integer userId);
+    List<UserSubmitInfoDomain> queryByUserIds(List<Integer> userIds);
 
     /**
      * 插入用户的提交记录

@@ -4,10 +4,12 @@ import com.kelab.usercenter.dal.model.UserInfoModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface UserInfoMapper {
 
-    UserInfoModel queryById(@Param("id") Integer id);
+    List<UserInfoModel> queryByIds(@Param("ids") List<Integer> id);
 
     UserInfoModel queryByUsername(@Param("username") String username);
 

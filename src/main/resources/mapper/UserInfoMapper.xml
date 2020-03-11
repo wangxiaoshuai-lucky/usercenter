@@ -25,6 +25,11 @@
         `student_id`, `student_class`, `qq`, `avatar`, `sign`, `phone_number`, `role_id`
     </sql>
 
+    <sql id="Column_List_Without_Pwd">
+        `id`, `username`, `email`, `real_name`, `school`, `institution`,
+        `student_id`, `student_class`, `qq`, `avatar`, `sign`, `phone_number`, `role_id`
+    </sql>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into `User_info` (`id`, `username`, `email`,
                                  `password`, `real_name`, `school`, `institution`,
@@ -38,23 +43,27 @@
     </insert>
 
 
-    <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="queryByIds" resultMap="BaseResultMap" parameterType="java.util.List">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Column_List_Without_Pwd"/>
         from `User_info`
-        where `id` = #{id,jdbcType=INTEGER}
+        where `id` in
+        <foreach collection="ids" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
     <select id="queryByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from `User_info`
-        where `username` = #{username,jdbcType=INTEGER}
+        where `username` = #{username,jdbcType=VARCHAR}
     </select>
 
     <select id="queryByStudentId" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Column_List_Without_Pwd"/>
         from `User_info`
         where `username` = #{studentId,jdbcType=INTEGER}
     </select>

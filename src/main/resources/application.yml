@@ -11,8 +11,6 @@ server:
 
 
 spring:
-  main:
-    allow-bean-definition-overriding: true
   application:
     name: service-usercenter
   # mysql 配置

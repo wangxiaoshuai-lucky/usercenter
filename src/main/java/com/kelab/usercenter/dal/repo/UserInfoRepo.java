@@ -2,12 +2,14 @@ package com.kelab.usercenter.dal.repo;
 
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 
+import java.util.List;
+
 public interface UserInfoRepo {
 
     /**
-     * 通过 id 查询用户
+     * 通过 ids 查询用户
      */
-    UserInfoDomain queryById(Integer id, boolean withSubmitInfo);
+    List<UserInfoDomain> queryByIds(List<Integer> ids, boolean withSubmitInfo);
 
 
     /**
