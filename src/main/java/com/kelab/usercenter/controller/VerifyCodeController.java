@@ -3,6 +3,7 @@ package com.kelab.usercenter.controller;
 
 import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.constant.BaseRetCodeConstant;
+import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.VerifyCodeInfo;
 import com.kelab.usercenter.constant.enums.CacheConstant;
 import com.kelab.usercenter.dal.redis.RedisCache;
@@ -33,7 +34,7 @@ public class VerifyCodeController {
      * @return
      */
     @GetMapping("/pic.do")
-    public JsonAndModel verifyPic(String logId, Integer operatorId) throws IOException {
+    public JsonAndModel verifyPic(Context context) throws IOException {
         VerifyCodeUtils.ImgResult imgResult = VerifyCodeUtils.VerifyCode(80, 30, 4);
         redisCache.set(CacheConstant.VERIFY_CODE, imgResult.getUuid(), imgResult.getCode());
         VerifyCodeInfo verifyCode = new VerifyCodeInfo();

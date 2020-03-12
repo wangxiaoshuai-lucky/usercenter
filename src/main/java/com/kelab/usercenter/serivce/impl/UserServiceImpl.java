@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserInfoService {
         if (!verifyCode.equalsIgnoreCase(originCode)) {
             return StatusMsgConstant.VERIFY_CODE_ERROR;
         }
+        redisCache.delete(CacheConstant.VERIFY_CODE, uuid);
         UserInfoDomain userInfoDomain = userInfoRepo.queryByUsername(username, false);
         if (userInfoDomain == null) {
             return StatusMsgConstant.USER_NOT_EXIST_ERROR;

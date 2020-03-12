@@ -1,8 +1,8 @@
 package com.kelab.usercenter.builder;
 
+import com.kelab.info.base.constant.UserRoleConstant;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.constant.UserInfoConstant;
-import com.kelab.usercenter.constant.UserRoleConstant;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.dal.domain.UserSubmitInfoDomain;
 
