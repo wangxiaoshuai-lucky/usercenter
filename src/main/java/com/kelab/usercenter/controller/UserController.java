@@ -7,6 +7,7 @@ import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.LoginResult;
 import com.kelab.info.usercenter.UserInfo;
+import com.kelab.usercenter.builder.ContextBuilder;
 import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.StatusMsgConstant;
 import com.kelab.usercenter.constant.UserInfoConstant;
@@ -40,8 +41,8 @@ public class UserController {
      */
     @GetMapping("/user/signin.do")
     @Verify(notNull = {"username", "password", "verifyCode", "uuid"})
-    public JsonAndModel login(Context context, String username, String password, String verifyCode, String uuid) {
-        LoginResult result = userInfoService.login(context, username, password, verifyCode, uuid);
+    public JsonAndModel login(String logId, Integer operatorId, String username, String password, String verifyCode, String uuid) {
+        LoginResult result = userInfoService.login(ContextBuilder.buildContext(logId, operatorId), username, password, verifyCode, uuid);
         JsonAndModel.Builder builder = JsonAndModel.builder(result.getStatus()).data(result);
         if (result.getStatus().equals(StatusMsgConstant.LOGIN_SUCCESS)) {
             builder.token(tokens(result));
@@ -55,10 +56,8 @@ public class UserController {
     @PostMapping("/user.do")
     @Verify(notNull = {"userInfo.username", "userInfo.password", "userInfo.realName", "userInfo.studentId", "userInfo.email"})
     public JsonAndModel register(String logId, Integer operatorId, @RequestBody UserInfo userInfo) {
-        Context context = new Context();
-        context.setLogId(logId);
-        context.setOperatorId(operatorId);
-        LoginResult result = userInfoService.register(context, userInfo);
+        LoginResult result = userInfoService.register(ContextBuilder.buildContext(logId, operatorId), userInfo);
+        System.out.println("接受请求中:" +logId + operatorId + userInfo.getUsername());
         JsonAndModel.Builder builder = JsonAndModel.builder(result.getStatus()).data(result);
         if (result.getStatus().equals(StatusMsgConstant.LOGIN_SUCCESS)) {
             builder.token(tokens(result));
@@ -81,8 +80,8 @@ public class UserController {
      */
     @GetMapping("/user/resetPasswd.do")
     @Verify(notNull = {"username", "verifyCode", "uuid"})
-    public JsonAndModel resetPwd(Context context, String username,String verifyCode,String uuid){
-        String status = userInfoService.resetPwd(context, username, verifyCode, uuid);
+    public JsonAndModel resetPwd(String logId, Integer operatorId, String username,String verifyCode,String uuid){
+        String status = userInfoService.resetPwd(ContextBuilder.buildContext(logId, operatorId), username, verifyCode, uuid);
         return JsonAndModel.builder(status).build();
     }
 
@@ -92,10 +91,7 @@ public class UserController {
     @PutMapping("/user/resetPasswd.do")
     @Verify(notNull = "newPassword")
     public JsonAndModel resetPwd(String logId, Integer operatorId, @RequestBody String newPassword) {
-        Context context = new Context();
-        context.setLogId(logId);
-        context.setOperatorId(operatorId);
-        userInfoService.resetPassword(context, newPassword);
+        userInfoService.resetPassword(ContextBuilder.buildContext(logId, operatorId), newPassword);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
 
@@ -103,8 +99,8 @@ public class UserController {
      * 提交排行榜
      */
     @GetMapping("/user/submit/statistic.do")
-    public JsonAndModel submitStatistic(Context context, PageQuery pageQuery, Integer timeType) throws IllegalAccessException {
-        PaginationResult<UserInfo> result = userInfoService.submitStatistic(context, pageQuery, TimeType.valueOf(timeType));
+    public JsonAndModel submitStatistic(String logId, Integer operatorId, PageQuery pageQuery, Integer timeType) throws IllegalAccessException {
+        PaginationResult<UserInfo> result = userInfoService.submitStatistic(ContextBuilder.buildContext(logId, operatorId), pageQuery, TimeType.valueOf(timeType));
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).data(result).build();
     }
 
