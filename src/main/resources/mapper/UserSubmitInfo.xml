@@ -18,6 +18,18 @@
         insert into `User_submit_info` (`id`, `user_id`, `ac_num`, `submit_num`)
         values (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.acNum,jdbcType=INTEGER}, #{record.submitNum,jdbcType=INTEGER})
     </insert>
+    <update id="updateByUserId" parameterType="com.kelab.usercenter.dal.model.UserSubmitInfoModel">
+        update `User_submit_info`
+        <set>
+            <if test="record.acNum != null">
+                `ac_num` = #{record.acNum, jdbcType=INTEGER},
+            </if>
+            <if test="record.submitNum != null">
+                `submit_num` = #{record.submitNum, jdbcType=INTEGER},
+            </if>
+        </set>
+        where `user_id` = #{record.userId, jdbcType=INTEGER}
+    </update>
 
 
     <select id="queryByUserIds" resultMap="BaseResultMap" parameterType="java.lang.Integer">

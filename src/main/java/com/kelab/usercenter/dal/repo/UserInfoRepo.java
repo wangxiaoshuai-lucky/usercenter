@@ -31,4 +31,9 @@ public interface UserInfoRepo {
      * 用户注册
      */
     void save(UserInfoDomain userInfoDomain);
+
+    /**
+     * 更新
+     */
+    void update(UserInfoDomain userInfoDomain);
 }

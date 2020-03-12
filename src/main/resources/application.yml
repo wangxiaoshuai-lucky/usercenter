@@ -40,6 +40,14 @@ jwt:
   jwt_issuer: SwustOJ_JWT
   jwt_aud: swuster
 
+# mail 配置
+mail:
+  smtp:
+    host: mail.swust.edu.cn
+  username: acm@swust.edu.cn
+  password: csofswust
+  sender: SWUST OJ 团队
+
 # cache 配置
 cache:
   millisecond: 7200000

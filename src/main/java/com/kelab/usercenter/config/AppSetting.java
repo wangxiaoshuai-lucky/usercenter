@@ -18,6 +18,32 @@ public class AppSetting {
 
     public static String jwtAud;
 
+    public static String mailHost;
+
+    public static String mailUsername;
+
+    public static String mailPassword;
+
+    public static String mailSender;
+
+    @Value("${mail.smtp.host}")
+    public void setMailHost(String mailHost) {
+        AppSetting.mailHost = mailHost;
+    }
+    @Value("${mail.username}")
+    public void setMailUsername(String mailUsername) {
+        AppSetting.mailUsername = mailUsername;
+    }
+    @Value("${mail.password}")
+    public void setMailPassword(String mailPassword) {
+        AppSetting.mailPassword = mailPassword;
+    }
+    @Value("${mail.sender}")
+    public void setMailSender(String mailSender) {
+        AppSetting.mailSender = mailSender;
+    }
+
+
     @Value("${cache.millisecond}")
     public void setCacheMillisecond(Long cacheMillisecond) {
         AppSetting.cacheMillisecond = cacheMillisecond;

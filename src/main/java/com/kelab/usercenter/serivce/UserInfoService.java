@@ -10,10 +10,25 @@ import com.kelab.usercenter.resultVO.SingleResult;
 
 public interface UserInfoService {
 
+    /**
+     * 登录
+     */
     LoginResult login(Context context, String username, String password, String verifyCode, String uuid);
 
-
+    /**
+     * 注册
+     */
     LoginResult register(Context context, UserInfo userInfo);
+
+    /**
+     * 重置密码
+     */
+    String resetPwd(Context context, String username, String verifyCode, String uuid);
+
+    /**
+     * 重置密码
+     */
+    void resetPassword(Context context, String password);
 
     /**
      * 查询全部用户数量

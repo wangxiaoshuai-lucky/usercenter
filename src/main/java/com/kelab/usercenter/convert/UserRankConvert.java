@@ -18,7 +18,11 @@ public class UserRankConvert {
         domain.setSubmitNum(model.getSubmitNum());
         domain.setId(model.getId());
         domain.setUserId(model.getUserId());
-        domain.setTimeType(TimeType.valueOf(model.getTimeType()));
+        try {
+            domain.setTimeType(TimeType.valueOf(model.getTimeType()));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return domain;
     }
 }

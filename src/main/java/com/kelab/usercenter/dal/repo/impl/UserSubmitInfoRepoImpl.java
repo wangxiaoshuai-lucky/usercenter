@@ -35,4 +35,9 @@ public class UserSubmitInfoRepoImpl implements UserSubmitInfoRepo {
         Integer id = userSubmitInfoMapper.save(UserSubmitInfoConvert.domainToModel(record));
         record.setId(id);
     }
+
+    @Override
+    public void update(UserSubmitInfoDomain record) {
+        userSubmitInfoMapper.updateByUserId(UserSubmitInfoConvert.domainToModel(record));
+    }
 }

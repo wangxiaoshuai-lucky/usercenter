@@ -65,13 +65,59 @@
         select
         <include refid="Column_List_Without_Pwd"/>
         from `User_info`
-        where `username` = #{studentId,jdbcType=INTEGER}
+        where `student_id` = #{studentId,jdbcType=INTEGER}
     </select>
 
     <select id="queryTotal" resultType="java.lang.Integer">
         select count(*)
         from `User_info`
     </select>
+
+    <update id="updateByIdSelective" parameterType="com.kelab.usercenter.dal.model.UserInfoModel">
+        update `User_info`
+        <set>
+            <if test="record.username != null">
+                `username` = #{record.username,jdbcType=VARCHAR},
+            </if>
+            <if test="record.email != null">
+                `email` = #{record.email,jdbcType=VARCHAR},
+            </if>
+            <if test="record.password != null">
+                `password` = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.realName != null">
+                `real_name` = #{record.realName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.school != null">
+                `school` = #{record.school,jdbcType=VARCHAR},
+            </if>
+            <if test="record.institution != null">
+                `institution` = #{record.institution,jdbcType=VARCHAR},
+            </if>
+            <if test="record.studentId != null">
+                `student_id` = #{record.studentId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.studentClass != null">
+                `student_class` = #{record.studentClass,jdbcType=VARCHAR},
+            </if>
+            <if test="record.qq != null">
+                `qq` = #{record.qq,jdbcType=VARCHAR},
+            </if>
+            <if test="record.avatar != null">
+                `avatar` = #{record.avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sign != null">
+                `sign` = #{record.sign,jdbcType=VARCHAR},
+            </if>
+            <if test="record.phoneNumber != null">
+                `phone_number` = #{record.phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.roleId != null">
+                `role_id` = #{record.roleId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where `id` = #{record.id,jdbcType=INTEGER}
+    </update>
 
 
 </mapper>

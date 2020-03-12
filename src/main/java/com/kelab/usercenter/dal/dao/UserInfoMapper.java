@@ -18,4 +18,6 @@ public interface UserInfoMapper {
     Integer queryTotal();
 
     void save(@Param("record") UserInfoModel record);
+
+    void updateByIdSelective(@Param("record") UserInfoModel record);
 }

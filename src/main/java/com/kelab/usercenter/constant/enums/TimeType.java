@@ -5,11 +5,11 @@ public enum TimeType {
 
     private int value;
 
-    private TimeType(int value) {
+    TimeType(int value) {
         this.value = value;
     }
 
-    public static TimeType valueOf(int value) {
+    public static TimeType valueOf(int value) throws IllegalAccessException {
         switch (value) {
             case 1:
                 return DAY;
@@ -17,9 +17,8 @@ public enum TimeType {
                 return WEEK;
             case 3:
                 return MONTH;
-            default:
-                return null;
         }
+        throw new IllegalAccessException("TimeType parse wrong");
     }
 
     public Integer value() {

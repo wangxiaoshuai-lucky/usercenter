@@ -15,4 +15,9 @@ public interface UserSubmitInfoRepo {
      * 插入用户的提交记录
      */
     void save(UserSubmitInfoDomain record);
+
+    /**
+     * 插入用户的提交记录
+     */
+    void update(UserSubmitInfoDomain record);
 }

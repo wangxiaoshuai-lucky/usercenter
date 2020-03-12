@@ -12,4 +12,6 @@ public interface UserSubmitInfoMapper {
     List<UserSubmitInfoModel> queryByUserIds(@Param("userIds") List<Integer> userId);
 
     Integer save(@Param("record") UserSubmitInfoModel record);
+
+    void updateByUserId(@Param("record") UserSubmitInfoModel record);
 }
