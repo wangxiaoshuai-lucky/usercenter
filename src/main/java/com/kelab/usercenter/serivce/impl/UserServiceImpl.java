@@ -1,7 +1,10 @@
 package com.kelab.usercenter.serivce.impl;
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.base.query.PageQuery;
+import com.kelab.info.base.query.UserQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.LoginResult;
 import com.kelab.info.usercenter.UserInfo;
@@ -23,14 +26,19 @@ import com.kelab.usercenter.dal.repo.SiteSettingRepo;
 import com.kelab.usercenter.dal.repo.UserInfoRepo;
 import com.kelab.usercenter.dal.repo.UserLoginLogRepo;
 import com.kelab.usercenter.dal.repo.UserRankRepo;
-import com.kelab.usercenter.resultVO.SingleResult;
-import com.kelab.usercenter.sender.MailSender;
+import com.kelab.usercenter.result.SingleResult;
 import com.kelab.usercenter.serivce.OnlineService;
 import com.kelab.usercenter.serivce.UserInfoService;
+import com.kelab.usercenter.support.ContextLogger;
+import com.kelab.usercenter.support.MailSender;
 import com.kelab.util.md5.Md5Util;
 import com.kelab.util.token.TokenUtil;
+import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,6 +47,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserInfoService {
+
+    private static final ContextLogger log = new ContextLogger(UserServiceImpl.class);
 
     private UserInfoRepo userInfoRepo;
 
@@ -139,16 +149,16 @@ public class UserServiceImpl implements UserInfoService {
     }
 
     @Override
-    public void resetPassword(Context context, String password) {
+    public void resetPassword(Context context, Integer userId, String password) {
         UserInfoDomain domain = new UserInfoDomain();
-        domain.setId(context.getOperatorId());
+        domain.setId(userId);
         domain.setPassword(Md5Util.StringInMd5(password));
         userInfoRepo.update(domain);
     }
 
     @Override
     public SingleResult<Integer> queryTotal(Context context) {
-        return new SingleResult<>(userInfoRepo.queryTotal());
+        return new SingleResult<>(userInfoRepo.queryTotal(new UserQuery()));
     }
 
     @Override
@@ -161,21 +171,92 @@ public class UserServiceImpl implements UserInfoService {
             result.setPagingList(null);
             return result;
         }
-        Map<Integer, UserRankDomain> rankDomainMap = ranks.stream().collect(Collectors.toMap(UserRankDomain::getUserId, item -> item));
-        // 用户ids
-        List<Integer> userIds = new ArrayList<>(rankDomainMap.keySet());
+        List<Integer> userIds = ranks.stream().map(UserRankDomain::getUserId).collect(Collectors.toList());
         List<UserInfoDomain> userInfoDomains = userInfoRepo.queryByIds(userIds, false);
-        List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
-        userInfoDomains.forEach(item -> {
-            UserRankDomain rankDomain = rankDomainMap.get(item.getId());
+        Map<Integer, UserInfoDomain> userInfoDomainMap = userInfoDomains.stream().collect(Collectors.toMap(UserInfoDomain::getId, v -> v));
+        List<UserInfo> userInfos = new ArrayList<>(ranks.size());
+        ranks.forEach(item -> {
+            UserInfoDomain info = userInfoDomainMap.get(item.getUserId());
             UserSubmitInfoDomain submitInfoDomain = new UserSubmitInfoDomain();
-            submitInfoDomain.setAcNum(rankDomain.getAcNum());
-            submitInfoDomain.setSubmitNum(rankDomain.getSubmitNum());
-            item.setSubmitInfo(submitInfoDomain);
-            userInfos.add(UserInfoConvert.domainToInfo(item));
+            submitInfoDomain.setAcNum(item.getAcNum());
+            submitInfoDomain.setSubmitNum(item.getSubmitNum());
+            submitInfoDomain.setRank(item.getRank());
+            info.setSubmitInfo(submitInfoDomain);
+            userInfos.add(UserInfoConvert.domainToInfo(info));
         });
         result.setPagingList(userInfos);
         return result;
+    }
+
+    @Override
+    public PaginationResult<UserInfo> queryPage(Context context, UserQuery query) {
+        List<Integer> ids = totalIds(query);
+        if (ids.size() != 0) {
+            // 1. 通过 id ids 查询, 可以走缓存
+            return queryByIds(context, ids);
+        } else {
+            // 2. 通过其他信息查询
+            PaginationResult<UserInfo> result = new PaginationResult<>();
+            List<UserInfoDomain> userInfoDomains = userInfoRepo.queryPage(query, true);
+            List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
+            userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
+            result.setPagingList(userInfos);
+            result.setTotal(userInfoRepo.queryTotal(query));
+            return result;
+        }
+    }
+
+    @Override
+    public String update(Context context, UserInfoDomain domain) {
+        if (domain.getPassword() != null) {
+            domain.setPassword(Md5Util.StringInMd5(domain.getPassword()));
+        }
+        // username 查重
+        if (Strings.isNotBlank(domain.getUsername())) {
+            UserInfoDomain old = userInfoRepo.queryByUsername(domain.getUsername(), false);
+            if (old != null && !old.getId().equals(domain.getId())) {
+                return StatusMsgConstant.USER_EXISTED_ERROR;
+            }
+        }
+        // stuId 查重
+        if (Strings.isNotBlank(domain.getStudentId())) {
+            UserInfoDomain old = userInfoRepo.queryByStudentId(domain.getStudentId(), false);
+            if (old != null && !old.getId().equals(domain.getId())) {
+                return StatusMsgConstant.USER_EXISTED_ERROR;
+            }
+        }
+        userInfoRepo.update(domain);
+        return StatusMsgConstant.SUCCESS;
+    }
+
+    @Override
+    public void delete(Context context, List<Integer> ids) {
+        List<UserInfoDomain> oldUsers = userInfoRepo.queryByIds(ids, true);
+        if (!CollectionUtils.isEmpty(oldUsers)) {
+            userInfoRepo.delete(ids);
+            log.info(context,"删除用户：{}", JSON.toJSONString(oldUsers));
+        }
+    }
+
+    private PaginationResult<UserInfo> queryByIds(Context context, List<Integer> ids) {
+        PaginationResult<UserInfo> result = new PaginationResult<>();
+        List<UserInfoDomain> userInfoDomains = userInfoRepo.queryByIds(ids, true);
+        List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
+        userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
+        result.setPagingList(userInfos);
+        result.setTotal(userInfos.size());
+        return result;
+    }
+
+    private List<Integer> totalIds(UserQuery query) {
+        List<Integer> userIds = new ArrayList<>();
+        if (query.getIds() != null) {
+            userIds.addAll(query.getIds());
+        }
+        if (query.getId() != null) {
+            userIds.add(query.getId());
+        }
+        return userIds;
     }
 
     private LoginResult loginSuccess(UserInfoDomain domain) {

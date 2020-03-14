@@ -2,11 +2,16 @@ package com.kelab.usercenter.serivce;
 
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.base.query.PageQuery;
+import com.kelab.info.base.query.UserQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.LoginResult;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.constant.enums.TimeType;
-import com.kelab.usercenter.resultVO.SingleResult;
+import com.kelab.usercenter.dal.domain.UserInfoDomain;
+import com.kelab.usercenter.result.SingleResult;
+
+import java.util.List;
+
 
 public interface UserInfoService {
 
@@ -28,7 +33,7 @@ public interface UserInfoService {
     /**
      * 重置密码
      */
-    void resetPassword(Context context, String password);
+    void resetPassword(Context context,Integer userId, String password);
 
     /**
      * 查询全部用户数量
@@ -40,4 +45,18 @@ public interface UserInfoService {
      */
     PaginationResult<UserInfo> submitStatistic(Context context, PageQuery pageQuery, TimeType timeType);
 
+    /**
+     * 分页查询
+     */
+    PaginationResult<UserInfo> queryPage(Context context, UserQuery query);
+
+    /**
+     * 更新用户
+     */
+    String update(Context context, UserInfoDomain domain);
+
+    /**
+     * 删除用户
+     */
+    void delete(Context context, List<Integer> ids);
 }

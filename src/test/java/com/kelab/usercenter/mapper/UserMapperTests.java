@@ -1,5 +1,6 @@
 package com.kelab.usercenter.mapper;
 
+import com.alibaba.fastjson.JSON;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.builder.UserInfoBuilder;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,4 +37,14 @@ public class UserMapperTests {
         Assert.notNull(userInfoDomain.getId());
         Assert.notNull(userInfoDomain.getSubmitInfo().getId());
     }
+
+    @Test
+    @Rollback
+    public void testQueryByIds() {
+        List<UserInfoDomain> domains = userInfoRepo.queryByIds(Arrays.asList(1, 14290), true);
+        for (UserInfoDomain userInfoDomain: domains) {
+            System.out.println(JSON.toJSONString(userInfoDomain));
+        }
+    }
+
 }

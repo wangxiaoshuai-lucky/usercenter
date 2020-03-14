@@ -1,6 +1,7 @@
 package com.kelab.usercenter.dal.repo.impl;
 
 import cn.wzy.verifyUtils.annotation.Verify;
+import com.kelab.info.base.query.UserQuery;
 import com.kelab.usercenter.constant.enums.CacheConstant;
 import com.kelab.usercenter.convert.UserInfoConvert;
 import com.kelab.usercenter.dal.dao.UserInfoMapper;
@@ -12,6 +13,7 @@ import com.kelab.usercenter.dal.repo.UserInfoRepo;
 import com.kelab.usercenter.dal.repo.UserSubmitInfoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,28 +47,39 @@ public class UserInfoRepoImpl implements UserInfoRepo {
             }
             return dbModels.stream().collect(Collectors.toMap(UserInfoModel::getId, v -> v));
         });
-        if (userInfoModels == null || userInfoModels.size() == 0) {
+        if (CollectionUtils.isEmpty(userInfoModels)) {
             return Collections.emptyList();
         }
         List<UserInfoDomain> domains = new ArrayList<>(userInfoModels.size());
         userInfoModels.forEach(item -> domains.add(UserInfoConvert.modelToDomain(item)));
         if (withSubmitInfo) {
-            List<Integer> userIds = userInfoModels.stream().map(UserInfoModel::getId).collect(Collectors.toList());
-            List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(userIds);
-            Map<Integer, UserSubmitInfoDomain> submitInfoDomainMap = userSubmitInfoDomains
-                    .stream()
-                    .collect(Collectors.toMap(UserSubmitInfoDomain::getUserId, (obj) -> obj));
-            domains.forEach(item -> item.setSubmitInfo(submitInfoDomainMap.get(item.getId())));
+            fillUserInfoSubmitInfo(domains);
         }
         return domains;
+    }
+
+    @Override
+    @Verify(notNull = {"userQuery.page", "userQuery.rows"})
+    public List<UserInfoDomain> queryPage(UserQuery userQuery, boolean withSubmitInfo) {
+        List<UserInfoModel> models = userInfoMapper.queryPage(userQuery);
+        List<UserInfoDomain> domains = new ArrayList<>(models.size());
+        models.forEach(item -> domains.add(UserInfoConvert.modelToDomain(item)));
+        if (withSubmitInfo) {
+            fillUserInfoSubmitInfo(domains);
+        }
+        return domains;
+    }
+
+    @Override
+    public Integer queryTotal(UserQuery userQuery) {
+        return userInfoMapper.queryTotal(userQuery);
     }
 
     @Override
     public UserInfoDomain queryByUsername(String username, boolean withSubmitInfo) {
         UserInfoDomain domain = UserInfoConvert.modelToDomain(userInfoMapper.queryByUsername(username));
         if (domain != null && withSubmitInfo) {
-            List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(Collections.singletonList(domain.getId()));
-            domain.setSubmitInfo(userSubmitInfoDomains.get(0));
+            fillUserInfoSubmitInfo(domain);
         }
         return domain;
     }
@@ -75,15 +88,9 @@ public class UserInfoRepoImpl implements UserInfoRepo {
     public UserInfoDomain queryByStudentId(String studentId, boolean withSubmitInfo) {
         UserInfoDomain domain = UserInfoConvert.modelToDomain(userInfoMapper.queryByStudentId(studentId));
         if (domain != null && withSubmitInfo) {
-            List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(Collections.singletonList(domain.getId()));
-            domain.setSubmitInfo(userSubmitInfoDomains.get(0));
+            fillUserInfoSubmitInfo(domain);
         }
         return domain;
-    }
-
-    @Override
-    public Integer queryTotal() {
-        return userInfoMapper.queryTotal();
     }
 
     @Override
@@ -104,10 +111,42 @@ public class UserInfoRepoImpl implements UserInfoRepo {
     public void update(UserInfoDomain userInfoDomain) {
         UserInfoModel userInfoModel = UserInfoConvert.domainToModel(userInfoDomain);
         userInfoMapper.updateByIdSelective(userInfoModel);
+        // 删除缓存
+        redisCache.delete(CacheConstant.USER_INFO, userInfoDomain.getId());
         // 更新submitInfo
         UserSubmitInfoDomain userSubmitInfoDomain = userInfoDomain.getSubmitInfo();
         if (userSubmitInfoDomain != null) {
             userSubmitInfoRepo.update(userSubmitInfoDomain);
         }
+    }
+
+    @Override
+    public void delete(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        // 删除基本数据
+        userInfoMapper.delete(ids);
+        redisCache.deleteList(CacheConstant.USER_INFO, ids);
+        userSubmitInfoRepo.delete(ids);
+    }
+
+    private void fillUserInfoSubmitInfo(List<UserInfoDomain> domains) {
+        if (domains == null || domains.size() == 0) {
+            return;
+        }
+        List<Integer> userIds = domains.stream().map(UserInfoDomain::getId).collect(Collectors.toList());
+        List<UserSubmitInfoDomain> submitInfoDomains = userSubmitInfoRepo.queryByUserIds(userIds);
+        Map<Integer, UserSubmitInfoDomain> submitInfoDomainMap =
+                submitInfoDomains.stream().collect(Collectors.toMap(UserSubmitInfoDomain::getUserId, obj -> obj));
+        domains.forEach(item -> item.setSubmitInfo(submitInfoDomainMap.get(item.getId())));
+    }
+
+    private void fillUserInfoSubmitInfo(UserInfoDomain domain) {
+        if (domain == null) {
+            return;
+        }
+        List<UserSubmitInfoDomain> userSubmitInfoDomains = userSubmitInfoRepo.queryByUserIds(Collections.singletonList(domain.getId()));
+        domain.setSubmitInfo(userSubmitInfoDomains.get(0));
     }
 }

@@ -1,4 +1,4 @@
-package com.kelab.usercenter.resultVO;
+package com.kelab.usercenter.result;
 
 public class SingleResult<T> {
     private T obj;

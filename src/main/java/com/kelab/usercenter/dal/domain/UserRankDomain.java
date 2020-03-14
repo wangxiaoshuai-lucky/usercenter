@@ -1,6 +1,5 @@
 package com.kelab.usercenter.dal.domain;
 
-import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.constant.enums.TimeType;
 
 public class UserRankDomain {
@@ -14,6 +13,8 @@ public class UserRankDomain {
     private Integer submitNum;
 
     private TimeType timeType;
+
+    private Integer rank;
 
     public UserRankDomain() {
     }
@@ -56,5 +57,13 @@ public class UserRankDomain {
 
     public void setTimeType(TimeType timeType) {
         this.timeType = timeType;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

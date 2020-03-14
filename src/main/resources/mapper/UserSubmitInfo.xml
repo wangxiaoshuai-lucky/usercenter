@@ -8,6 +8,7 @@
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="ac_num" property="acNum" jdbcType="INTEGER"/>
         <result column="submit_num" property="submitNum" jdbcType="INTEGER"/>
+        <result column="rank" property="rank" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -15,9 +16,12 @@
     </sql>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into `User_submit_info` (`id`, `user_id`, `ac_num`, `submit_num`)
-        values (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.acNum,jdbcType=INTEGER}, #{record.submitNum,jdbcType=INTEGER})
+        insert into `User_submit_info` (`user_id`, `ac_num`, `submit_num`)
+        values (#{record.userId,jdbcType=INTEGER}, #{record.acNum,jdbcType=INTEGER},
+                #{record.submitNum,jdbcType=INTEGER})
     </insert>
+
+
     <update id="updateByUserId" parameterType="com.kelab.usercenter.dal.model.UserSubmitInfoModel">
         update `User_submit_info`
         <set>
@@ -34,14 +38,28 @@
 
     <select id="queryByUserIds" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
-        <include refid="Base_Column_List"/>
-        from `User_submit_info`
-        where `user_id` in
+        <include refid="Base_Column_List"/>,
+        (
+        select count(*) + 1 from `User_submit_info` `usi2`
+        where `usi2`.`ac_num` &gt; `usi1`.`ac_num` or (`usi2`.`ac_num` = `usi1`.`ac_num` and `usi2`.`submit_num` &lt;
+        `usi1`.`submit_num`)
+        ) as `rank`
+        from `User_submit_info` `usi1`
+        where `usi1`.`user_id` in
         <foreach collection="userIds" item="item" open="("
                  separator="," close=")">
             #{item}
         </foreach>
     </select>
+
+    <delete id="delete">
+        delete from `User_submit_info`
+        where `user_id` in
+        <foreach collection="userIds" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 
 
 </mapper>

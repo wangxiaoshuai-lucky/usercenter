@@ -36,7 +36,7 @@ spring:
 # jwt 配置
 jwt:
   secret_key: ok332shyuasdf
-  millisecond: 1800000
+  millisecond: 86400000
   jwt_issuer: SwustOJ_JWT
   jwt_aud: swuster
 
@@ -57,6 +57,7 @@ cache:
 logging:
   level:
     root: info
+    com.kelab.usercenter.dal.dao : debug
   file: /usercerter.log
 
 # mybatis 扫描路径

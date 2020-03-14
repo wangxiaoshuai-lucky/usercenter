@@ -1,5 +1,6 @@
 package com.kelab.usercenter.dal.repo;
 
+import com.kelab.info.base.query.UserQuery;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 
 import java.util.List;
@@ -7,9 +8,19 @@ import java.util.List;
 public interface UserInfoRepo {
 
     /**
-     * 通过 ids 查询用户
+     * 通过 ids 查询用户(缓存)
      */
     List<UserInfoDomain> queryByIds(List<Integer> ids, boolean withSubmitInfo);
+
+    /**
+     * 查询用户（除 ids 例外）
+     */
+    List<UserInfoDomain> queryPage(UserQuery userQuery, boolean withSubmitInfo);
+
+    /**
+     * 查询 roleId 相关个数
+     */
+    Integer queryTotal(UserQuery userQuery);
 
 
     /**
@@ -22,10 +33,6 @@ public interface UserInfoRepo {
      */
     UserInfoDomain queryByStudentId(String studentId, boolean withSubmitInfo);
 
-    /**
-     * 查询所有用户数量
-     */
-    Integer queryTotal();
 
     /**
      * 用户注册
@@ -36,4 +43,9 @@ public interface UserInfoRepo {
      * 更新
      */
     void update(UserInfoDomain userInfoDomain);
+
+    /**
+     * 删除用户
+     */
+    void delete(List<Integer> ids);
 }

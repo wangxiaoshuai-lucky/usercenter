@@ -14,4 +14,6 @@ public interface UserSubmitInfoMapper {
     Integer save(@Param("record") UserSubmitInfoModel record);
 
     void updateByUserId(@Param("record") UserSubmitInfoModel record);
+
+    void delete(@Param("userIds") List<Integer> userIds);
 }

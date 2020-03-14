@@ -1,4 +1,4 @@
-package com.kelab.usercenter.sender;
+package com.kelab.usercenter.support;
 
 import com.kelab.usercenter.config.AppSetting;
 import org.apache.commons.mail.DefaultAuthenticator;

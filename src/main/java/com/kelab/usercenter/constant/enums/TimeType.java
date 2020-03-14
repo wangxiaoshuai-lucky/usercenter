@@ -1,7 +1,7 @@
 package com.kelab.usercenter.constant.enums;
 
 public enum TimeType {
-    DAY(1), WEEK(2), MONTH(3);
+    ALL(0), DAY(1), WEEK(2), MONTH(3);
 
     private int value;
 

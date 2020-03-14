@@ -10,6 +10,8 @@ public class UserSubmitInfoModel {
 
     private Integer submitNum;
 
+    private Integer rank;// 通过acNum、submitNum排序生成
+
     public Integer getUserId() {
         return userId;
     }
@@ -42,4 +44,11 @@ public class UserSubmitInfoModel {
         this.id = id;
     }
 
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
 }

@@ -105,10 +105,23 @@ public class RedisCache {
         return result;
     }
 
-    public boolean delete(CacheConstant bizName, String key) {
+    public boolean delete(CacheConstant bizName, Object key) {
         boolean result = false;
         try {
-            redisTemplate.delete(bizName + key);
+            redisTemplate.delete(bizName + key.toString());
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean deleteList(CacheConstant bizName, List<?> key) {
+        boolean result = false;
+        try {
+            List<String> keys = new ArrayList<>();
+            key.forEach(item -> keys.add(bizName + item.toString()));
+            redisTemplate.delete(keys);
             result = true;
         } catch (Exception e) {
             e.printStackTrace();

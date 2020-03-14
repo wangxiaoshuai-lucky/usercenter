@@ -29,6 +29,11 @@ public class UserRankRepoImpl implements UserRankRepo {
         List<UserRankModel> models = userRankMapper.queryPage(timeType.value(), pageQuery);
         List<UserRankDomain> domains = new ArrayList<>(models.size());
         models.forEach(item -> domains.add(UserRankConvert.modelToDomain(item)));
+        // 补充rank字段
+        for (int i = 0; i < domains.size(); i++) {
+            int preTotal = (pageQuery.getPage() - 1) * pageQuery.getRows();
+            domains.get(i).setRank(i + preTotal + 1);
+        }
         return domains;
     }
 

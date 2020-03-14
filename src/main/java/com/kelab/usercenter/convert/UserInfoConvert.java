@@ -1,5 +1,6 @@
 package com.kelab.usercenter.convert;
 
+import com.kelab.info.base.constant.UserRoleConstant;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.dal.domain.UserSubmitInfoDomain;
@@ -41,13 +42,6 @@ public class UserInfoConvert {
         }
         UserInfoDomain domain = new UserInfoDomain();
         BeanUtils.copyProperties(userInfo, domain);
-        if (userInfo.getAcNum() != null && userInfo.getSubmitNum() != null) {
-            UserSubmitInfoDomain submitInfoDomain = new UserSubmitInfoDomain();
-            submitInfoDomain.setAcNum(userInfo.getAcNum());
-            submitInfoDomain.setSubmitNum(userInfo.getSubmitNum());
-            submitInfoDomain.setUserId(domain.getId());
-            domain.setSubmitInfo(submitInfoDomain);
-        }
         return domain;
     }
 
@@ -60,10 +54,12 @@ public class UserInfoConvert {
         }
         UserInfo info = new UserInfo();
         BeanUtils.copyProperties(userInfoDomain, info);
+        info.setRole(UserRoleConstant.parseConstantName(info.getRoleId()));
         if (userInfoDomain.getSubmitInfo() != null) {
             UserSubmitInfoDomain submitInfoDomain = userInfoDomain.getSubmitInfo();
             info.setAcNum(submitInfoDomain.getAcNum());
             info.setSubmitNum(submitInfoDomain.getSubmitNum());
+            info.setRank(submitInfoDomain.getRank());
         }
         return info;
     }

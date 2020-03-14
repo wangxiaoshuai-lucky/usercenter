@@ -1,8 +1,6 @@
 package com.kelab.usercenter.convert;
 
-import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.dal.domain.UserSubmitInfoDomain;
-import com.kelab.usercenter.dal.model.UserInfoModel;
 import com.kelab.usercenter.dal.model.UserSubmitInfoModel;
 import org.springframework.beans.BeanUtils;
 

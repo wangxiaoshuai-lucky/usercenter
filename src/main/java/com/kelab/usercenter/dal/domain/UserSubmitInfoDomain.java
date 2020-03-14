@@ -10,6 +10,8 @@ public class UserSubmitInfoDomain {
 
     private Integer submitNum;
 
+    private Integer rank;
+
     public Integer getUserId() {
         return userId;
     }
@@ -43,5 +45,13 @@ public class UserSubmitInfoDomain {
     }
 
     public UserSubmitInfoDomain() {
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

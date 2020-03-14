@@ -12,7 +12,7 @@
         `id`, `user_id`, `ac_num`, `submit_num`, `time_type`
     </sql>
 
-    <sql id="limit_sql">limit ${(pageQuery.page - 1) * pageQuery.rows},#{pageQuery.rows}</sql>
+    <sql id="limit_sql">limit ${(pageQuery.page - 1) * pageQuery.rows}, ${pageQuery.rows}</sql>
 
     <select id="queryPage" resultMap="BaseResultMap">
         select

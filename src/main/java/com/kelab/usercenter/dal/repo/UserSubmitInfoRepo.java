@@ -20,4 +20,9 @@ public interface UserSubmitInfoRepo {
      * 插入用户的提交记录
      */
     void update(UserSubmitInfoDomain record);
+
+    /**
+     * 删除用户的提交数据
+     */
+    void delete(List<Integer> userIds);
 }
