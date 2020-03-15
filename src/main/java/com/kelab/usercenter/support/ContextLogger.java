@@ -15,17 +15,29 @@ public class ContextLogger {
     }
 
     public void info(Context context, String format, Object... objects) {
-        String pre = String.format(CONTEXT_MSG, JSON.toJSONString(context));
-        this.LOGGER.info("{}" + format, pre, objects);
+        String contextInfo = JSON.toJSONString(context);
+        if (contextInfo.equals("{}")) {
+            contextInfo = "暂无上下文信息";
+        }
+        String pre = String.format(CONTEXT_MSG, contextInfo);
+        this.LOGGER.info(pre + format, objects);
     }
 
     public void error(Context context, String format, Object... objects) {
-        String pre = String.format(CONTEXT_MSG, JSON.toJSONString(context));
-        this.LOGGER.info("{}" + format, pre, objects);
+        String contextInfo = JSON.toJSONString(context);
+        if (contextInfo.equals("{}")) {
+            contextInfo = "暂无上下文信息";
+        }
+        String pre = String.format(CONTEXT_MSG, contextInfo);
+        this.LOGGER.error(pre + format, objects);
     }
 
     public void debug(Context context, String format, Object... objects) {
-        String pre = String.format(CONTEXT_MSG, JSON.toJSONString(context));
-        this.LOGGER.debug("{}" + format, pre, objects);
+        String contextInfo = JSON.toJSONString(context);
+        if (contextInfo.equals("{}")) {
+            contextInfo = "暂无上下文信息";
+        }
+        String pre = String.format(CONTEXT_MSG, contextInfo);
+        this.LOGGER.debug(pre + format, objects);
     }
 }

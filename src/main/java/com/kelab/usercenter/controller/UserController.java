@@ -3,15 +3,13 @@ package com.kelab.usercenter.controller;
 import cn.wzy.verifyUtils.annotation.Verify;
 import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.constant.JsonWebTokenConstant;
 import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.base.constant.UserRoleConstant;
-import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.base.query.UserQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.config.AppSetting;
-import com.kelab.usercenter.constant.UserInfoConstant;
-import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.convert.UserInfoConvert;
 import com.kelab.usercenter.result.LoginResult;
 import com.kelab.usercenter.result.SingleResult;
@@ -49,7 +47,8 @@ public class UserController {
         LoginResult result = userInfoService.login(context, username, password, verifyCode, uuid);
         JsonAndModel.Builder builder = JsonAndModel.builder(result.getStatus()).data(result);
         if (result.getStatus().equals(StatusMsgConstant.LOGIN_SUCCESS)) {
-            builder.token(tokens(result));
+            builder.token(loginTokens(result));
+            onlineService.online(result.getUserId());
         }
         return builder.build();
     }
@@ -63,7 +62,8 @@ public class UserController {
         LoginResult result = userInfoService.register(context, userInfo);
         JsonAndModel.Builder builder = JsonAndModel.builder(result.getStatus()).data(result);
         if (result.getStatus().equals(StatusMsgConstant.LOGIN_SUCCESS)) {
-            builder.token(tokens(result));
+            builder.token(loginTokens(result));
+            onlineService.online(result.getUserId());
         }
         return builder.build();
     }
@@ -96,16 +96,6 @@ public class UserController {
     public JsonAndModel resetPwd(Context context, @RequestBody String newPassword) {
         userInfoService.resetPassword(context, context.getOperatorId(), newPassword);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
-    }
-
-    /**
-     * 提交排行榜
-     */
-    @GetMapping("/user/submit/statistic.do")
-    @Verify(notNull = {"pageQuery.page", "pageQuery.rows"})
-    public JsonAndModel submitStatistic(Context context, PageQuery pageQuery, Integer timeType) {
-        PaginationResult<UserInfo> result = userInfoService.submitStatistic(context, pageQuery, TimeType.valueOf(timeType));
-        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).data(result).build();
     }
 
     /**
@@ -148,7 +138,6 @@ public class UserController {
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
 
-
     private boolean isIllegal(Context context, UserInfo userInfo) {
         // 非管理员不能修改roleId, password, 以及其他人的信息
         if (context.getOperatorRoleId() != UserRoleConstant.ADMIN) {
@@ -160,10 +149,12 @@ public class UserController {
     }
 
 
-    private String tokens(LoginResult result) {
+    private String loginTokens(LoginResult result) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(UserInfoConstant.USER_ID, result.getUserId());
-        claims.put(UserInfoConstant.ROLE_ID, result.getRoleId());
+        claims.put(JsonWebTokenConstant.USER_ID, result.getUserId());
+        claims.put(JsonWebTokenConstant.ROLE_ID, result.getRoleId());
+        claims.put(JsonWebTokenConstant.USERNAME, result.getUsername());
+        claims.put(JsonWebTokenConstant.REFRESH_EXP_DATE, AppSetting.jwtRefreshExpMillisecond + System.currentTimeMillis());
         return TokenUtil.tokens(claims
                 , AppSetting.secretKey
                 , AppSetting.jwtMillisecond

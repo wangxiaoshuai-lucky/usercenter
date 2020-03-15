@@ -10,7 +10,9 @@ import java.util.List;
 @Mapper
 public interface UserRankMapper {
 
-    List<UserRankModel> queryPage(Integer timeType, @Param("pageQuery") PageQuery pageQuery);
+    List<UserRankModel> queryPage(@Param("timeType")Integer timeType, @Param("pageQuery") PageQuery pageQuery);
 
-    Integer total(Integer timeType);
+    Integer total(@Param("timeType") Integer timeType);
+
+    void delete(@Param("timeType") Integer timeType);
 }

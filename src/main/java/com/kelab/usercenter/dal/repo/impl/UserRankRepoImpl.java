@@ -41,4 +41,9 @@ public class UserRankRepoImpl implements UserRankRepo {
     public Integer total(TimeType timeType) {
         return userRankMapper.total(timeType.value());
     }
+
+    @Override
+    public void delete(TimeType timeType) {
+        userRankMapper.delete(timeType.value());
+    }
 }

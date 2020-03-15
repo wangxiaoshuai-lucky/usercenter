@@ -14,6 +14,8 @@ public class AppSetting {
 
     public static Integer jwtMillisecond;
 
+    public static Integer jwtRefreshExpMillisecond;
+
     public static String jwtIssuer;
 
     public static String jwtAud;
@@ -59,12 +61,17 @@ public class AppSetting {
         AppSetting.jwtMillisecond = jwtMillisecond;
     }
 
-    @Value("${jwt.jwt_issuer}")
+    @Value(("${jwt.refresh_exp_millisecond}"))
+    public void setJwtRefreshExpMillisecond(Integer jwtRefreshExpMillisecond) {
+        AppSetting.jwtRefreshExpMillisecond = jwtRefreshExpMillisecond;
+    }
+
+    @Value("${jwt.issuer}")
     public void setJwtIssuer(String jwtIssuer) {
         AppSetting.jwtIssuer = jwtIssuer;
     }
 
-    @Value("${jwt.jwt_aud}")
+    @Value("${jwt.aud}")
     public void setJwtAud(String jwtAud) {
         AppSetting.jwtAud = jwtAud;
     }

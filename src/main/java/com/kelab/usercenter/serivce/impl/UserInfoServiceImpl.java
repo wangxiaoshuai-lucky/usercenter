@@ -1,7 +1,9 @@
 package com.kelab.usercenter.serivce.impl;
 
+import cn.wzy.verifyUtils.annotation.Verify;
 import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.constant.JsonWebTokenConstant;
 import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.base.query.UserQuery;
@@ -10,7 +12,6 @@ import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.builder.UserInfoBuilder;
 import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.SettingsConstant;
-import com.kelab.usercenter.constant.UserInfoConstant;
 import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.convert.UserInfoConvert;
@@ -26,7 +27,6 @@ import com.kelab.usercenter.dal.repo.UserLoginLogRepo;
 import com.kelab.usercenter.dal.repo.UserRankRepo;
 import com.kelab.usercenter.result.LoginResult;
 import com.kelab.usercenter.result.SingleResult;
-import com.kelab.usercenter.serivce.OnlineService;
 import com.kelab.usercenter.serivce.UserInfoService;
 import com.kelab.usercenter.support.ContextLogger;
 import com.kelab.usercenter.support.MailSender;
@@ -43,9 +43,9 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class UserServiceImpl implements UserInfoService {
+public class UserInfoServiceImpl implements UserInfoService {
 
-    private static final ContextLogger log = new ContextLogger(UserServiceImpl.class);
+    private static final ContextLogger log = new ContextLogger(UserInfoServiceImpl.class);
 
     private UserInfoRepo userInfoRepo;
 
@@ -57,21 +57,17 @@ public class UserServiceImpl implements UserInfoService {
 
     private UserLoginLogRepo userLoginLogRepo;
 
-    private OnlineService onlineService;
-
     @Autowired(required = false)
-    public UserServiceImpl(UserInfoRepo userInfoRepo
+    public UserInfoServiceImpl(UserInfoRepo userInfoRepo
             , UserRankRepo userRankRepo
             , SiteSettingRepo siteSettingRepo
             , RedisCache redisCache
-            , UserLoginLogRepo userLoginLogRepo
-            , OnlineService onlineService) {
+            , UserLoginLogRepo userLoginLogRepo) {
         this.userInfoRepo = userInfoRepo;
         this.userRankRepo = userRankRepo;
         this.siteSettingRepo = siteSettingRepo;
         this.redisCache = redisCache;
         this.userLoginLogRepo = userLoginLogRepo;
-        this.onlineService = onlineService;
     }
 
     @Override
@@ -164,8 +160,7 @@ public class UserServiceImpl implements UserInfoService {
         Integer total = userRankRepo.total(timeType);
         PaginationResult<UserInfo> result = new PaginationResult<>();
         result.setTotal(total);
-        if (ranks == null || ranks.size() == 0) {
-            result.setPagingList(null);
+        if (CollectionUtils.isEmpty(ranks)) {
             return result;
         }
         List<Integer> userIds = ranks.stream().map(UserRankDomain::getUserId).collect(Collectors.toList());
@@ -188,19 +183,33 @@ public class UserServiceImpl implements UserInfoService {
     @Override
     public PaginationResult<UserInfo> queryPage(Context context, UserQuery query) {
         List<Integer> ids = totalIds(query);
+        PaginationResult<UserInfo> result = new PaginationResult<>();
         if (ids.size() != 0) {
             // 1. 通过 id ids 查询, 可以走缓存
-            return queryByIds(context, ids);
+            List<UserInfo> userInfos = this.queryByIds(context, ids, true);
+            result.setPagingList(userInfos);
+            result.setTotal(userInfos.size());
         } else {
             // 2. 通过其他信息查询
-            PaginationResult<UserInfo> result = new PaginationResult<>();
             List<UserInfoDomain> userInfoDomains = userInfoRepo.queryPage(query, true);
             List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
             userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
             result.setPagingList(userInfos);
             result.setTotal(userInfoRepo.queryTotal(query));
-            return result;
         }
+        return result;
+    }
+
+    @Override
+    @Verify(sizeLimit = {"ids [1, 200]"})
+    public List<UserInfo> queryByIds(Context context, List<Integer> ids, boolean withSubmitInfo) {
+        List<UserInfoDomain> userInfoDomains = userInfoRepo.queryByIds(ids, withSubmitInfo);
+        if (CollectionUtils.isEmpty(userInfoDomains)) {
+            return Collections.emptyList();
+        }
+        List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
+        userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
+        return userInfos;
     }
 
     @Override
@@ -227,23 +236,15 @@ public class UserServiceImpl implements UserInfoService {
     }
 
     @Override
+    @Verify(sizeLimit = {"ids [1, 200]"})
     public void delete(Context context, List<Integer> ids) {
         List<UserInfoDomain> oldUsers = userInfoRepo.queryByIds(ids, true);
         if (!CollectionUtils.isEmpty(oldUsers)) {
             userInfoRepo.delete(ids);
-            log.info(context,"删除用户：{}", JSON.toJSONString(oldUsers));
+            log.info(context, "删除用户：{}", JSON.toJSONString(oldUsers));
         }
     }
 
-    private PaginationResult<UserInfo> queryByIds(Context context, List<Integer> ids) {
-        PaginationResult<UserInfo> result = new PaginationResult<>();
-        List<UserInfoDomain> userInfoDomains = userInfoRepo.queryByIds(ids, true);
-        List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
-        userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
-        result.setPagingList(userInfos);
-        result.setTotal(userInfos.size());
-        return result;
-    }
 
     private List<Integer> totalIds(UserQuery query) {
         List<Integer> userIds = new ArrayList<>();
@@ -264,15 +265,15 @@ public class UserServiceImpl implements UserInfoService {
         result.setRoleId(domain.getRoleId());
         result.setUserId(domain.getId());
         userLoginLogRepo.save(new UserLoginLogModel(null, domain.getId(), System.currentTimeMillis()));
-        onlineService.online(result.getUserId());
         return result;
     }
 
     private String tokenForResetPwd(UserInfoDomain domain, int exp) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(UserInfoConstant.ROLE_ID, domain.getRoleId());
-        claims.put(UserInfoConstant.USER_ID, domain.getId());
-        claims.put(UserInfoConstant.USERNAME, domain.getUsername());
+        claims.put(JsonWebTokenConstant.ROLE_ID, domain.getRoleId());
+        claims.put(JsonWebTokenConstant.USER_ID, domain.getId());
+        claims.put(JsonWebTokenConstant.USERNAME, domain.getUsername());
+        claims.put(JsonWebTokenConstant.REFRESH_EXP_DATE, System.currentTimeMillis());
         return TokenUtil.tokens(claims, AppSetting.secretKey, exp, AppSetting.jwtIssuer, AppSetting.jwtAud);
     }
 

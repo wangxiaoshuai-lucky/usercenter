@@ -29,16 +29,19 @@ spring:
     jedis:
       pool:
         max-active: 50
-        max-wait: 3000
+        max-wait: -1ms
         max-idle: 20
         min-idle: 2
 
 # jwt 配置
 jwt:
   secret_key: ok332shyuasdf
-  millisecond: 86400000
-  jwt_issuer: SwustOJ_JWT
-  jwt_aud: swuster
+  # token 超时5分钟
+  millisecond: 300000
+  # 可刷新时间3天
+  refresh_exp_millisecond: 259200000
+  issuer: SwustOJ_JWT
+  aud: swuster
 
 # mail 配置
 mail:
@@ -57,7 +60,7 @@ cache:
 logging:
   level:
     root: info
-    com.kelab.usercenter.dal.dao : debug
+    com.kelab.usercenter.dal.dao: debug
   file: /usercerter.log
 
 # mybatis 扫描路径

@@ -26,4 +26,8 @@
     <select id="total" resultType="java.lang.Integer">
         select count(*) from `User_rank` where time_type = #{timeType,jdbcType=INTEGER}
     </select>
+
+    <delete id="delete">
+        delete from `User_rank` where `time_type` = #{timeType,jdbcType=INTEGER}
+    </delete>
 </mapper>

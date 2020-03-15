@@ -11,4 +11,6 @@ public interface UserRankRepo {
     List<UserRankDomain> queryPageByTimeType(TimeType timeType, PageQuery pageQuery);
 
     Integer total(TimeType timeType);
+
+    void delete(TimeType timeType);
 }

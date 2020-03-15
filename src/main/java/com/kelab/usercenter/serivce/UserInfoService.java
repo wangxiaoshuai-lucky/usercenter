@@ -50,6 +50,12 @@ public interface UserInfoService {
      */
     PaginationResult<UserInfo> queryPage(Context context, UserQuery query);
 
+
+    /**
+     * 通过 ids 查询
+     */
+    List<UserInfo> queryByIds(Context context, List<Integer> userIds, boolean withSubmitInfo);
+
     /**
      * 更新用户
      */
