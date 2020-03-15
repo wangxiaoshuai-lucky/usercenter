@@ -1,7 +1,6 @@
 package com.kelab.usercenter.redis;
 
-import com.kelab.info.usercenter.UserInfo;
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.model.SiteSettingModel;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class RedisTests {
 
     @Test
     public void testCacheList() {
-        List<SiteSettingModel> models = redisCache.cacheList(CacheConstant.SITE_SETTING, Collections.singletonList(1), SiteSettingModel.class, (keys -> {
+        List<SiteSettingModel> models = redisCache.cacheList(CacheBizName.SITE_SETTING, Collections.singletonList(1), SiteSettingModel.class, (keys -> {
             Map<Integer, SiteSettingModel> siteSettingModelMap = new HashMap<>();
             SiteSettingModel model = new SiteSettingModel();
             model.setId(1);
@@ -36,7 +35,7 @@ public class RedisTests {
 
     @Test
     public void testCacheOne() {
-        SiteSettingModel model = redisCache.cacheOne(CacheConstant.SITE_SETTING, Collections.singletonList(1), SiteSettingModel.class, (keys -> {
+        SiteSettingModel model = redisCache.cacheOne(CacheBizName.SITE_SETTING, Collections.singletonList(1), SiteSettingModel.class, (keys -> {
             SiteSettingModel model1 = new SiteSettingModel();
             model1.setId(1);
             model1.setName("setting1");

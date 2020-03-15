@@ -101,7 +101,7 @@ public class UserController {
      */
     @GetMapping("/user/submit/statistic.do")
     @Verify(notNull = {"pageQuery.page", "pageQuery.rows"})
-    public JsonAndModel submitStatistic(Context context, PageQuery pageQuery, Integer timeType) throws IllegalAccessException {
+    public JsonAndModel submitStatistic(Context context, PageQuery pageQuery, Integer timeType) {
         PaginationResult<UserInfo> result = userInfoService.submitStatistic(context, pageQuery, TimeType.valueOf(timeType));
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).data(result).build();
     }

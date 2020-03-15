@@ -1,6 +1,6 @@
 package com.kelab.usercenter.dal.repo.impl;
 
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.convert.SiteSettingConvert;
 import com.kelab.usercenter.dal.dao.SiteSettingMapper;
 import com.kelab.usercenter.dal.domain.SiteSettingDomain;
@@ -29,7 +29,7 @@ public class SiteSettingRepoImpl implements SiteSettingRepo {
 
     @Override
     public List<SiteSettingDomain> queryByIds(List<Integer> ids) {
-        List<SiteSettingModel> siteSettings = redisCache.cacheList(CacheConstant.SITE_SETTING, ids, SiteSettingModel.class, missKeyList -> {
+        List<SiteSettingModel> siteSettings = redisCache.cacheList(CacheBizName.SITE_SETTING, ids, SiteSettingModel.class, missKeyList -> {
             List<SiteSettingModel> models = siteSettingMapper.queryByIds(missKeyList);
             if (models == null) {
                 return null;

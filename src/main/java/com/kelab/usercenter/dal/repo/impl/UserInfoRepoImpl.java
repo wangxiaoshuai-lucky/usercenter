@@ -2,7 +2,7 @@ package com.kelab.usercenter.dal.repo.impl;
 
 import cn.wzy.verifyUtils.annotation.Verify;
 import com.kelab.info.base.query.UserQuery;
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.convert.UserInfoConvert;
 import com.kelab.usercenter.dal.dao.UserInfoMapper;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
@@ -40,7 +40,7 @@ public class UserInfoRepoImpl implements UserInfoRepo {
     }
 
     public List<UserInfoDomain> queryByIds(List<Integer> ids, boolean withSubmitInfo) {
-        List<UserInfoModel> userInfoModels = redisCache.cacheList(CacheConstant.USER_INFO, ids, UserInfoModel.class, missKeyList -> {
+        List<UserInfoModel> userInfoModels = redisCache.cacheList(CacheBizName.USER_INFO, ids, UserInfoModel.class, missKeyList -> {
             List<UserInfoModel> dbModels = userInfoMapper.queryByIds(missKeyList);
             if (dbModels == null) {
                 return null;
@@ -112,7 +112,7 @@ public class UserInfoRepoImpl implements UserInfoRepo {
         UserInfoModel userInfoModel = UserInfoConvert.domainToModel(userInfoDomain);
         userInfoMapper.updateByIdSelective(userInfoModel);
         // 删除缓存
-        redisCache.delete(CacheConstant.USER_INFO, userInfoDomain.getId());
+        redisCache.delete(CacheBizName.USER_INFO, userInfoDomain.getId());
         // 更新submitInfo
         UserSubmitInfoDomain userSubmitInfoDomain = userInfoDomain.getSubmitInfo();
         if (userSubmitInfoDomain != null) {
@@ -127,7 +127,7 @@ public class UserInfoRepoImpl implements UserInfoRepo {
         }
         // 删除基本数据
         userInfoMapper.delete(ids);
-        redisCache.deleteList(CacheConstant.USER_INFO, ids);
+        redisCache.deleteList(CacheBizName.USER_INFO, ids);
         userSubmitInfoRepo.delete(ids);
     }
 

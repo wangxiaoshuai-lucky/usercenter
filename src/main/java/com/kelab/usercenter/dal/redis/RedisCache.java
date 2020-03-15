@@ -2,7 +2,7 @@ package com.kelab.usercenter.dal.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.kelab.usercenter.config.AppSetting;
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.callback.ListCacheCallback;
 import com.kelab.usercenter.dal.redis.callback.OneCacheCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,11 +25,11 @@ public class RedisCache {
     }
 
 
-    public String get(CacheConstant bizName, String key) {
+    public String get(CacheBizName bizName, String key) {
         return redisTemplate.opsForValue().get(bizName + key);
     }
 
-    public void set(CacheConstant bizName, String key, String value) {
+    public void set(CacheBizName bizName, String key, String value) {
         try {
             redisTemplate.opsForValue().set(bizName + key, value, AppSetting.cacheMillisecond, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
@@ -37,7 +37,7 @@ public class RedisCache {
         }
     }
 
-    public <K, V> List<V> cacheList(CacheConstant bizName, List<K> keys, Class<V> clazz, ListCacheCallback<K, V> callback) {
+    public <K, V> List<V> cacheList(CacheBizName bizName, List<K> keys, Class<V> clazz, ListCacheCallback<K, V> callback) {
         List<String> cacheKeys = genCacheKeyList(bizName, keys);
         List<V> result = new ArrayList<>();
         try {
@@ -71,7 +71,7 @@ public class RedisCache {
         return result;
     }
 
-    public <K, V> V cacheOne(CacheConstant bizName, K key, Class<V> clazz, OneCacheCallback<K, V> callback) {
+    public <K, V> V cacheOne(CacheBizName bizName, K key, Class<V> clazz, OneCacheCallback<K, V> callback) {
         String cacheObj = redisTemplate.opsForValue().get(bizName + key.toString());
         // missed cache
         if (cacheObj == null) {
@@ -88,13 +88,13 @@ public class RedisCache {
         }
     }
 
-    private List<String> genCacheKeyList(CacheConstant bizName, List<?> keys) {
+    private List<String> genCacheKeyList(CacheBizName bizName, List<?> keys) {
         List<String> cacheKeys = new ArrayList<>(keys.size());
         keys.forEach(item -> cacheKeys.add(bizName + item.toString()));
         return cacheKeys;
     }
 
-    public Object getAndSet(CacheConstant bizName, String key, String value) {
+    public Object getAndSet(CacheBizName bizName, String key, String value) {
         String result;
         try {
             result = redisTemplate.opsForValue().getAndSet(bizName + key, value);
@@ -105,7 +105,7 @@ public class RedisCache {
         return result;
     }
 
-    public boolean delete(CacheConstant bizName, Object key) {
+    public boolean delete(CacheBizName bizName, Object key) {
         boolean result = false;
         try {
             redisTemplate.delete(bizName + key.toString());
@@ -116,7 +116,7 @@ public class RedisCache {
         return result;
     }
 
-    public boolean deleteList(CacheConstant bizName, List<?> key) {
+    public boolean deleteList(CacheBizName bizName, List<?> key) {
         boolean result = false;
         try {
             List<String> keys = new ArrayList<>();
@@ -129,7 +129,7 @@ public class RedisCache {
         return result;
     }
 
-    public void zAdd(CacheConstant bizName, String zSetName, String value, Double score) {
+    public void zAdd(CacheBizName bizName, String zSetName, String value, Double score) {
         try {
             redisTemplate.opsForZSet().add(bizName + zSetName, value, score);
         } catch (Exception e) {

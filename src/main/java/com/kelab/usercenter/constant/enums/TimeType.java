@@ -1,7 +1,7 @@
 package com.kelab.usercenter.constant.enums;
 
 public enum TimeType {
-    ALL(0), DAY(1), WEEK(2), MONTH(3);
+    DAY(1), WEEK(2), MONTH(3);
 
     private int value;
 
@@ -9,7 +9,7 @@ public enum TimeType {
         this.value = value;
     }
 
-    public static TimeType valueOf(int value) throws IllegalAccessException {
+    public static TimeType valueOf(int value) {
         switch (value) {
             case 1:
                 return DAY;
@@ -18,7 +18,7 @@ public enum TimeType {
             case 3:
                 return MONTH;
         }
-        throw new IllegalAccessException("TimeType parse wrong");
+        throw new RuntimeException("TimeType parse wrong");
     }
 
     public Integer value() {

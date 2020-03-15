@@ -5,7 +5,7 @@ import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.constant.BaseRetCodeConstant;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.VerifyCodeInfo;
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.util.verifycode.VerifyCodeUtils;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class VerifyCodeController {
     @GetMapping("/pic.do")
     public JsonAndModel verifyPic(Context context) throws IOException {
         VerifyCodeUtils.ImgResult imgResult = VerifyCodeUtils.VerifyCode(80, 30, 4);
-        redisCache.set(CacheConstant.VERIFY_CODE, imgResult.getUuid(), imgResult.getCode());
+        redisCache.set(CacheBizName.VERIFY_CODE, imgResult.getUuid(), imgResult.getCode());
         VerifyCodeInfo verifyCode = new VerifyCodeInfo();
         verifyCode.setImg(imgResult.getImg());
         verifyCode.setUuid(imgResult.getUuid());

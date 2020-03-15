@@ -1,6 +1,5 @@
 package com.kelab.usercenter.serivce.impl;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.base.query.PageQuery;
@@ -13,7 +12,7 @@ import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.SettingsConstant;
 import com.kelab.usercenter.constant.StatusMsgConstant;
 import com.kelab.usercenter.constant.UserInfoConstant;
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.convert.UserInfoConvert;
 import com.kelab.usercenter.dal.domain.SiteSettingDomain;
@@ -34,8 +33,6 @@ import com.kelab.usercenter.support.MailSender;
 import com.kelab.util.md5.Md5Util;
 import com.kelab.util.token.TokenUtil;
 import org.apache.logging.log4j.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -80,12 +77,12 @@ public class UserServiceImpl implements UserInfoService {
     @Override
     public LoginResult login(Context context, String username, String password, String verifyCode, String uuid) {
         LoginResult result = new LoginResult();
-        if (!verifyCode.equalsIgnoreCase(redisCache.get(CacheConstant.VERIFY_CODE, uuid))) {
+        if (!verifyCode.equalsIgnoreCase(redisCache.get(CacheBizName.VERIFY_CODE, uuid))) {
             result.setStatus(StatusMsgConstant.VERIFY_CODE_ERROR);
             return result;
         }
         // 校验验证码后验证码失效
-        redisCache.delete(CacheConstant.VERIFY_CODE, uuid);
+        redisCache.delete(CacheBizName.VERIFY_CODE, uuid);
         UserInfoDomain domain = userInfoRepo.queryByUsername(username, false);
         if (domain == null) {
             result.setStatus(StatusMsgConstant.USER_NOT_EXIST_ERROR);
@@ -119,11 +116,11 @@ public class UserServiceImpl implements UserInfoService {
 
     @Override
     public String resetPwd(Context context, String username, String verifyCode, String uuid) {
-        String originCode = redisCache.get(CacheConstant.VERIFY_CODE, uuid);
+        String originCode = redisCache.get(CacheBizName.VERIFY_CODE, uuid);
         if (!verifyCode.equalsIgnoreCase(originCode)) {
             return StatusMsgConstant.VERIFY_CODE_ERROR;
         }
-        redisCache.delete(CacheConstant.VERIFY_CODE, uuid);
+        redisCache.delete(CacheBizName.VERIFY_CODE, uuid);
         UserInfoDomain userInfoDomain = userInfoRepo.queryByUsername(username, false);
         if (userInfoDomain == null) {
             return StatusMsgConstant.USER_NOT_EXIST_ERROR;

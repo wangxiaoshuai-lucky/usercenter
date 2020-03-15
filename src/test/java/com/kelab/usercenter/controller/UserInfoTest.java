@@ -1,9 +1,8 @@
 package com.kelab.usercenter.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.constant.StatusMsgConstant;
-import com.kelab.usercenter.constant.enums.CacheConstant;
+import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.util.uuid.UuidUtil;
 import org.junit.Before;
@@ -58,7 +57,7 @@ public class UserInfoTest {
     @Test
     public void loginSuccess() throws Exception {
         String uuid = UuidUtil.genUUID();
-        redisCache.set(CacheConstant.VERIFY_CODE, uuid, "1111");
+        redisCache.set(CacheBizName.VERIFY_CODE, uuid, "1111");
         mockMvc.perform(MockMvcRequestBuilders.get("/user/signin.do")
                 .param("username", "wangzy")
                 .param("password", "123456")
@@ -73,7 +72,7 @@ public class UserInfoTest {
     @Test
     public void pwdWrong() throws Exception {
         String uuid = UuidUtil.genUUID();
-        redisCache.set(CacheConstant.VERIFY_CODE, uuid, "1111");
+        redisCache.set(CacheBizName.VERIFY_CODE, uuid, "1111");
         mockMvc.perform(MockMvcRequestBuilders.get("/user/signin.do")
                 .param("username", "wangzy")
                 .param("password", "1234516")
@@ -87,7 +86,7 @@ public class UserInfoTest {
     @Test
     public void verifyWrong() throws Exception {
         String uuid = UuidUtil.genUUID();
-        redisCache.set(CacheConstant.VERIFY_CODE, uuid, "1112");
+        redisCache.set(CacheBizName.VERIFY_CODE, uuid, "1112");
         mockMvc.perform(MockMvcRequestBuilders.get("/user/signin.do")
                 .param("username", "wangzy")
                 .param("password", "123456")
@@ -101,7 +100,7 @@ public class UserInfoTest {
     @Test
     public void userNotExist() throws Exception {
         String uuid = UuidUtil.genUUID();
-        redisCache.set(CacheConstant.VERIFY_CODE, uuid, "1111");
+        redisCache.set(CacheBizName.VERIFY_CODE, uuid, "1111");
         mockMvc.perform(MockMvcRequestBuilders.get("/user/signin.do")
                 .param("username", "wangzy11")
                 .param("password", "123456")
@@ -162,7 +161,7 @@ public class UserInfoTest {
     @Test
     public void resetPassword() throws Exception {
         String uuid = UuidUtil.genUUID();
-        redisCache.set(CacheConstant.VERIFY_CODE, uuid, "1111");
+        redisCache.set(CacheBizName.VERIFY_CODE, uuid, "1111");
         mockMvc.perform(MockMvcRequestBuilders.get("/user/resetPasswd.do")
                 .param("username", "wangzy")
                 .param("verifyCode", "1111")
