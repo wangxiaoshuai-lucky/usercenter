@@ -1,7 +1,6 @@
 package com.kelab.usercenter.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.kelab.usercenter.constant.StatusMsgConstant;
 import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.util.uuid.UuidUtil;

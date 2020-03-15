@@ -3,26 +3,28 @@ package com.kelab.usercenter.controller;
 import cn.wzy.verifyUtils.annotation.Verify;
 import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.base.constant.UserRoleConstant;
 import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.base.query.UserQuery;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.LoginResult;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.config.AppSetting;
-import com.kelab.usercenter.constant.StatusMsgConstant;
 import com.kelab.usercenter.constant.UserInfoConstant;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.convert.UserInfoConvert;
+import com.kelab.usercenter.result.LoginResult;
 import com.kelab.usercenter.result.SingleResult;
 import com.kelab.usercenter.serivce.OnlineService;
 import com.kelab.usercenter.serivce.UserInfoService;
 import com.kelab.util.token.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {

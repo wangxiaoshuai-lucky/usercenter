@@ -5,13 +5,13 @@ import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.callback.ListCacheCallback;
 import com.kelab.usercenter.dal.redis.callback.OneCacheCallback;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisCache {
 
     private final RedisTemplate<String, String> redisTemplate;
+
+    private final RedisSerializer<String> keySerializer = new StringRedisSerializer();
 
     public RedisCache(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -63,6 +65,14 @@ public class RedisCache {
                         result.add(v);
                     });
                     redisTemplate.opsForValue().multiSet(cacheMap);
+                    // 批量设置超时时间
+                    redisTemplate.executePipelined((RedisCallback<String>) connection -> {
+                        connection.openPipeline();
+                        cacheMap.keySet().forEach(item ->
+                                connection.expire(Objects.requireNonNull(keySerializer.serialize(item)), AppSetting.cacheMillisecond / 1000)
+                        );
+                        return null;
+                    });
                 }
             }
         } catch (Exception e) {

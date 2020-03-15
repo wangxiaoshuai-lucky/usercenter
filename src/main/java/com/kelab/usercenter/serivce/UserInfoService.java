@@ -4,10 +4,10 @@ import com.kelab.info.base.PaginationResult;
 import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.base.query.UserQuery;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.LoginResult;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
+import com.kelab.usercenter.result.LoginResult;
 import com.kelab.usercenter.result.SingleResult;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public interface UserInfoService {
     /**
      * 重置密码
      */
-    void resetPassword(Context context,Integer userId, String password);
+    void resetPassword(Context context, Integer userId, String password);
 
     /**
      * 查询全部用户数量

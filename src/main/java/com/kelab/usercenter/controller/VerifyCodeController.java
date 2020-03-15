@@ -4,12 +4,10 @@ package com.kelab.usercenter.controller;
 import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.constant.BaseRetCodeConstant;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.VerifyCodeInfo;
 import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.RedisCache;
+import com.kelab.usercenter.result.VerifyCodeResult;
 import com.kelab.util.verifycode.VerifyCodeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +17,6 @@ import java.io.IOException;
 @RestController
 public class VerifyCodeController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VerifyCodeController.class);
 
     private final RedisCache redisCache;
 
@@ -37,7 +34,7 @@ public class VerifyCodeController {
     public JsonAndModel verifyPic(Context context) throws IOException {
         VerifyCodeUtils.ImgResult imgResult = VerifyCodeUtils.VerifyCode(80, 30, 4);
         redisCache.set(CacheBizName.VERIFY_CODE, imgResult.getUuid(), imgResult.getCode());
-        VerifyCodeInfo verifyCode = new VerifyCodeInfo();
+        VerifyCodeResult verifyCode = new VerifyCodeResult();
         verifyCode.setImg(imgResult.getImg());
         verifyCode.setUuid(imgResult.getUuid());
         return JsonAndModel.builder(BaseRetCodeConstant.SUCCESS)
