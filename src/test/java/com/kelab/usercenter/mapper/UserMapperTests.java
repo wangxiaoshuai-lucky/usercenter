@@ -1,7 +1,7 @@
 package com.kelab.usercenter.mapper;
 
 import com.alibaba.fastjson.JSON;
-import com.kelab.info.usercenter.UserInfo;
+import com.kelab.info.usercenter.info.UserInfo;
 import com.kelab.usercenter.builder.UserInfoBuilder;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.dal.repo.UserInfoRepo;
@@ -42,7 +42,7 @@ public class UserMapperTests {
     @Rollback
     public void testQueryByIds() {
         List<UserInfoDomain> domains = userInfoRepo.queryByIds(Arrays.asList(1, 14290), true);
-        for (UserInfoDomain userInfoDomain: domains) {
+        for (UserInfoDomain userInfoDomain : domains) {
             System.out.println(JSON.toJSONString(userInfoDomain));
         }
     }

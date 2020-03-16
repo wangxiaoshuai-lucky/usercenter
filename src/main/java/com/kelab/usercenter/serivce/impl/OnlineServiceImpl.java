@@ -2,7 +2,7 @@ package com.kelab.usercenter.serivce.impl;
 
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.UserInfo;
+import com.kelab.info.usercenter.info.UserInfo;
 import com.kelab.usercenter.config.AppSetting;
 import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.dal.redis.RedisCache;

@@ -76,13 +76,13 @@
         <if test="query.roleId != null">
             and `ui`.`role_id` = #{query.roleId, jdbcType=INTEGER}
         </if>
-        <if test="query.studentId != null">
+        <if test="query.studentId != null and query.studentId != ''">
             and `ui`.`student_id` = #{query.studentId, jdbcType=VARCHAR}
         </if>
-        <if test="query.realName != null">
+        <if test="query.realName != null and query.realName != ''">
             and `ui`.`real_name` = #{query.realName, jdbcType=VARCHAR}
         </if>
-        <if test="query.username != null">
+        <if test="query.username != null and query.username != ''">
             <if test="query.isLikeUsername == true">
                 and `ui`.`username` like contact(#{query.username, jdbcType=VARCHAR},'%')
             </if>
@@ -104,13 +104,13 @@
         <if test="query.roleId != null">
             and `ui`.`role_id` = #{query.roleId, jdbcType=INTEGER}
         </if>
-        <if test="query.studentId != null">
+        <if test="query.studentId != null and query.studentId != ''">
             and `ui`.`student_id` = #{query.studentId, jdbcType=VARCHAR}
         </if>
-        <if test="query.realName != null">
+        <if test="query.realName != null and query.realName != ''">
             and `ui`.`real_name` = #{query.realName, jdbcType=VARCHAR}
         </if>
-        <if test="query.username != null">
+        <if test="query.username != null and query.username != ''">
             <if test="query.isLikeUsername == true">
                 and `ui`.`username` like contact(#{query.username, jdbcType=VARCHAR},'%')
             </if>
@@ -143,40 +143,40 @@
     <update id="updateByIdSelective" parameterType="com.kelab.usercenter.dal.model.UserInfoModel">
         update `User_info`
         <set>
-            <if test="record.username != null">
+            <if test="record.username != null and record.username != ''">
                 `username` = #{record.username,jdbcType=VARCHAR},
             </if>
-            <if test="record.email != null">
+            <if test="record.email != null and record.email != ''">
                 `email` = #{record.email,jdbcType=VARCHAR},
             </if>
-            <if test="record.password != null">
+            <if test="record.password != null and record.password != ''">
                 `password` = #{record.password,jdbcType=VARCHAR},
             </if>
-            <if test="record.realName != null">
+            <if test="record.realName != null and record.realName != ''">
                 `real_name` = #{record.realName,jdbcType=VARCHAR},
             </if>
-            <if test="record.school != null">
+            <if test="record.school != null and record.school != ''">
                 `school` = #{record.school,jdbcType=VARCHAR},
             </if>
-            <if test="record.institution != null">
+            <if test="record.institution != null and record.institution != ''">
                 `institution` = #{record.institution,jdbcType=VARCHAR},
             </if>
-            <if test="record.studentId != null">
+            <if test="record.studentId != null and record.studentId != ''">
                 `student_id` = #{record.studentId,jdbcType=VARCHAR},
             </if>
-            <if test="record.studentClass != null">
+            <if test="record.studentClass != null and record.studentClass != ''">
                 `student_class` = #{record.studentClass,jdbcType=VARCHAR},
             </if>
-            <if test="record.qq != null">
+            <if test="record.qq != null and record.qq != ''">
                 `qq` = #{record.qq,jdbcType=VARCHAR},
             </if>
-            <if test="record.avatar != null">
+            <if test="record.avatar != null and record.avatar != ''">
                 `avatar` = #{record.avatar,jdbcType=VARCHAR},
             </if>
-            <if test="record.sign != null">
+            <if test="record.sign != null and record.sign != ''">
                 `sign` = #{record.sign,jdbcType=VARCHAR},
             </if>
-            <if test="record.phoneNumber != null">
+            <if test="record.phoneNumber != null and record.phoneNumber != ''">
                 `phone_number` = #{record.phoneNumber,jdbcType=VARCHAR},
             </if>
             <if test="record.roleId != null">

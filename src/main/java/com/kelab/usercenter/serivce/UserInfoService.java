@@ -1,10 +1,10 @@
 package com.kelab.usercenter.serivce;
 
 import com.kelab.info.base.PaginationResult;
-import com.kelab.info.base.query.base.PageQuery;
-import com.kelab.info.base.query.usercenter.UserQuery;
+import com.kelab.info.base.query.PageQuery;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.UserInfo;
+import com.kelab.info.usercenter.info.UserInfo;
+import com.kelab.info.usercenter.query.UserQuery;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.result.LoginResult;

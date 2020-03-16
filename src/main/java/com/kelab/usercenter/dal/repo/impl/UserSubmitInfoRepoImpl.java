@@ -1,6 +1,5 @@
 package com.kelab.usercenter.dal.repo.impl;
 
-import com.kelab.usercenter.convert.UserRankConvert;
 import com.kelab.usercenter.convert.UserSubmitInfoConvert;
 import com.kelab.usercenter.dal.dao.UserSubmitInfoMapper;
 import com.kelab.usercenter.dal.domain.UserSubmitInfoDomain;

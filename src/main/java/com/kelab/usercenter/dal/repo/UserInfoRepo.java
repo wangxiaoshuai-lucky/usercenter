@@ -1,6 +1,6 @@
 package com.kelab.usercenter.dal.repo;
 
-import com.kelab.info.base.query.usercenter.UserQuery;
+import com.kelab.info.usercenter.query.UserQuery;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 
 import java.util.List;
