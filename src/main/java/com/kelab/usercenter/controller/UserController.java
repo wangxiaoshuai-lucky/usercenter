@@ -6,7 +6,7 @@ import com.kelab.info.base.PaginationResult;
 import com.kelab.info.base.constant.JsonWebTokenConstant;
 import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.base.constant.UserRoleConstant;
-import com.kelab.info.base.query.UserQuery;
+import com.kelab.info.base.query.usercenter.UserQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.config.AppSetting;

@@ -1,8 +1,8 @@
 package com.kelab.usercenter.serivce;
 
 import com.kelab.info.base.PaginationResult;
-import com.kelab.info.base.query.PageQuery;
-import com.kelab.info.base.query.UserQuery;
+import com.kelab.info.base.query.base.PageQuery;
+import com.kelab.info.base.query.usercenter.UserQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.constant.enums.TimeType;

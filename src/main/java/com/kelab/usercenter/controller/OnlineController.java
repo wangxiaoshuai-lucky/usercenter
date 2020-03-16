@@ -5,7 +5,7 @@ import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.base.constant.JsonWebTokenConstant;
 import com.kelab.info.base.constant.StatusMsgConstant;
-import com.kelab.info.base.query.PageQuery;
+import com.kelab.info.base.query.base.PageQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.UserInfo;
 import com.kelab.usercenter.config.AppSetting;

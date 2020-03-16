@@ -1,7 +1,7 @@
 package com.kelab.usercenter.dal.repo.impl;
 
 import cn.wzy.verifyUtils.annotation.Verify;
-import com.kelab.info.base.query.UserQuery;
+import com.kelab.info.base.query.usercenter.UserQuery;
 import com.kelab.usercenter.constant.enums.CacheBizName;
 import com.kelab.usercenter.convert.UserInfoConvert;
 import com.kelab.usercenter.dal.dao.UserInfoMapper;

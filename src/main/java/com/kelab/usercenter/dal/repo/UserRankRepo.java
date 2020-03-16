@@ -1,6 +1,6 @@
 package com.kelab.usercenter.dal.repo;
 
-import com.kelab.info.base.query.PageQuery;
+import com.kelab.info.base.query.base.PageQuery;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.dal.domain.UserRankDomain;
 

@@ -1,6 +1,6 @@
 package com.kelab.usercenter.dal.dao;
 
-import com.kelab.info.base.query.UserQuery;
+import com.kelab.info.base.query.usercenter.UserQuery;
 import com.kelab.usercenter.dal.model.UserInfoModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

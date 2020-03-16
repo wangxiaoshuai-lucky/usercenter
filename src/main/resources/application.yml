@@ -61,7 +61,7 @@ logging:
   level:
     root: info
     com.kelab.usercenter.dal.dao: debug
-  file: /usercerter.log
+  file: /usercenter.log
 
 # mybatis 扫描路径
 mybatis:
