@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
 
-    private static final ContextLogger log = new ContextLogger(UserInfoServiceImpl.class);
+    private ContextLogger log;
 
     private UserInfoRepo userInfoRepo;
 
@@ -58,11 +58,13 @@ public class UserInfoServiceImpl implements UserInfoService {
     private UserLoginLogRepo userLoginLogRepo;
 
     @Autowired(required = false)
-    public UserInfoServiceImpl(UserInfoRepo userInfoRepo
-            , UserRankRepo userRankRepo
-            , SiteSettingRepo siteSettingRepo
-            , RedisCache redisCache
-            , UserLoginLogRepo userLoginLogRepo) {
+    public UserInfoServiceImpl(ContextLogger log,
+                               UserInfoRepo userInfoRepo,
+                               UserRankRepo userRankRepo,
+                               SiteSettingRepo siteSettingRepo,
+                               RedisCache redisCache,
+                               UserLoginLogRepo userLoginLogRepo) {
+        this.log = log;
         this.userInfoRepo = userInfoRepo;
         this.userRankRepo = userRankRepo;
         this.siteSettingRepo = siteSettingRepo;
@@ -241,7 +243,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         List<UserInfoDomain> oldUsers = userInfoRepo.queryByIds(ids, true);
         if (!CollectionUtils.isEmpty(oldUsers)) {
             userInfoRepo.delete(ids);
-            log.info(context, "删除用户：{}", JSON.toJSONString(oldUsers));
+            log.info(context, "删除用户：%s", JSON.toJSONString(oldUsers));
         }
     }
 

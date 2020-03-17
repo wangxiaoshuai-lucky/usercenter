@@ -2,14 +2,11 @@ package com.kelab.usercenter.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.kelab.info.context.Context;
-import com.kelab.usercenter.serivce.impl.UserInfoServiceImpl;
 import com.kelab.usercenter.support.ContextLogger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -22,7 +19,11 @@ import java.io.StringWriter;
 @Component
 public class LogAspect {
 
-    private static final ContextLogger log = new ContextLogger(UserInfoServiceImpl.class);
+    private ContextLogger log;
+
+    public LogAspect(ContextLogger log) {
+        this.log = log;
+    }
 
     @Pointcut("execution(public * com.kelab.usercenter.controller.*.*(..)))")
     public void LogPointCut() {
@@ -43,14 +44,15 @@ public class LogAspect {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
-        log.error(context,"*************error occurred*************\n" +
-                        "\tapi:{}\n" +
-                        "\tlogId:{}\n" +
-                        "\tuserId:{}\n" +
-                        "\troleId:{}\n" +
-                        "\targs:{}\n" +
-                        "\terr:{}\n" +
+        log.error(context, "*************error occurred*************\n" +
+                        "\tapi:%s\n" +
+                        "\tlogId:%s\n" +
+                        "\tuserId:%s\n" +
+                        "\troleId:%s\n" +
+                        "\targs:%s\n" +
+                        "\terr:%s\n" +
                         "*****************************************"
-                , request.getRequestURL().toString(), context.getLogId(), context.getOperatorId(), context.getOperatorRoleId(), JSON.toJSONString(args), sw.toString());
+                , request.getRequestURL().toString(), context.getLogId(), context.getOperatorId(),
+                context.getOperatorRoleId(), JSON.toJSONString(args), sw.toString());
     }
 }
