@@ -109,6 +109,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             return result;
         }
         userInfoRepo.save(userInfoDomain);
+        log.info(context, "新注册一个用户:%s", JSON.toJSONString(userInfoDomain));
         return loginSuccess(userInfoDomain);
     }
 
