@@ -27,12 +27,14 @@ public class VerifyCodeController {
 
     /**
      * 获取验证码
-     *
-     * @return
      */
     @GetMapping("/pic.do")
-    public JsonAndModel verifyPic(Context context) throws IOException {
-        VerifyCodeUtils.ImgResult imgResult = VerifyCodeUtils.VerifyCode(80, 30, 4);
+    public JsonAndModel verifyPic(Context context, Integer w, Integer h) throws IOException {
+        if (w == null || h == null) {
+            w = 100;
+            h = 50;
+        }
+        VerifyCodeUtils.ImgResult imgResult = VerifyCodeUtils.VerifyCode(w, h, 4);
         redisCache.set(CacheBizName.VERIFY_CODE, imgResult.getUuid(), imgResult.getCode());
         VerifyCodeResult verifyCode = new VerifyCodeResult();
         verifyCode.setImg(imgResult.getImg());
