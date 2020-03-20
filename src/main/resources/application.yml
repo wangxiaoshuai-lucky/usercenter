@@ -3,7 +3,7 @@ spring:
     name: service-usercenter
   ## 选择运行环境
   profiles:
-    active: prod
+    active: dev
 
 
 ## 公共配置 ##
