@@ -32,6 +32,7 @@ import com.kelab.usercenter.support.ContextLogger;
 import com.kelab.usercenter.support.MailSender;
 import com.kelab.util.md5.Md5Util;
 import com.kelab.util.token.TokenUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -194,6 +195,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             result.setTotal(userInfos.size());
         } else {
             // 2. 通过其他信息查询
+            this.filterPageQuery(query);
             List<UserInfoDomain> userInfoDomains = userInfoRepo.queryPage(query, true);
             List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
             userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
@@ -258,6 +260,30 @@ public class UserInfoServiceImpl implements UserInfoService {
             userIds.add(query.getId());
         }
         return userIds;
+    }
+
+    /**
+     * 考虑到业务场景只需要其中给一个条件，则进行条件过滤，让搜索精确走到单个索引上
+     * 如果查询条件过多，需要建很多的复合索引，对于业务来讲是不必要的
+     */
+    private void filterPageQuery(UserQuery query) {
+        if (StringUtils.isNotBlank(query.getUsername())) {
+            query.setRealName(null);
+            query.setRoleId(null);
+            query.setStudentId(null);
+        } else if (StringUtils.isNotBlank(query.getStudentId())) {
+            query.setUsername(null);
+            query.setRealName(null);
+            query.setRoleId(null);
+        } else if (StringUtils.isNotBlank(query.getRealName())) {
+            query.setUsername(null);
+            query.setRoleId(null);
+            query.setStudentId(null);
+        } else if (query.getRoleId() != null) {
+            query.setUsername(null);
+            query.setRealName(null);
+            query.setStudentId(null);
+        }
     }
 
     private LoginResult loginSuccess(UserInfoDomain domain) {
