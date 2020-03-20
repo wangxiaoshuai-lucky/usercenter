@@ -84,7 +84,7 @@
         </if>
         <if test="query.username != null and query.username != ''">
             <if test="query.isLikeUsername == true">
-                and `ui`.`username` like contact(#{query.username, jdbcType=VARCHAR},'%')
+                and `ui`.`username` like concat(#{query.username, jdbcType=VARCHAR},'%')
             </if>
             <if test="query.isLikeUsername == false">
                 and `ui`.`username` = #{query.username, jdbcType=VARCHAR}
@@ -112,7 +112,7 @@
         </if>
         <if test="query.username != null and query.username != ''">
             <if test="query.isLikeUsername == true">
-                and `ui`.`username` like contact(#{query.username, jdbcType=VARCHAR},'%')
+                and `ui`.`username` like concat(#{query.username, jdbcType=VARCHAR},'%')
             </if>
             <if test="query.isLikeUsername == false">
                 and `ui`.`username` = #{query.username, jdbcType=VARCHAR}
