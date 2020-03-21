@@ -26,7 +26,8 @@ import com.kelab.usercenter.dal.repo.UserInfoRepo;
 import com.kelab.usercenter.dal.repo.UserLoginLogRepo;
 import com.kelab.usercenter.dal.repo.UserRankRepo;
 import com.kelab.usercenter.result.LoginResult;
-import com.kelab.usercenter.result.SingleResult;
+import com.kelab.info.base.SingleResult;
+import com.kelab.usercenter.result.AcSubmitResult;
 import com.kelab.usercenter.serivce.UserInfoService;
 import com.kelab.usercenter.support.ContextLogger;
 import com.kelab.usercenter.support.MailSender;
@@ -250,6 +251,14 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
     }
 
+    @Override
+    public AcSubmitResult queryTodayCount(Context context) {
+        AcSubmitResult result = userRankRepo.queryCount(TimeType.DAY);
+        if (result == null) {
+            result = new AcSubmitResult(0, 0);
+        }
+        return result;
+    }
 
     private List<Integer> totalIds(UserQuery query) {
         List<Integer> userIds = new ArrayList<>();

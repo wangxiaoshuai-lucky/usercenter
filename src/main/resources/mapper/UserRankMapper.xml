@@ -24,7 +24,18 @@
     </select>
 
     <select id="total" resultType="java.lang.Integer">
-        select count(*) from `User_rank` where time_type = #{timeType,jdbcType=INTEGER}
+        select count(*) from `User_rank` where `time_type` = #{timeType,jdbcType=INTEGER}
+    </select>
+
+    <resultMap id="AcSubmitResultMap" type="com.kelab.usercenter.result.AcSubmitResult">
+        <result column="ac" property="ac" jdbcType="INTEGER"/>
+        <result column="submit" property="submit" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="queryCount" resultMap="AcSubmitResultMap">
+        select
+        sum(`ac_num`) as `ac`, sum(`submit_num`) as `submit`
+        from `User_rank`
+        where `time_type` = #{timeType,jdbcType=INTEGER}
     </select>
 
     <delete id="delete">

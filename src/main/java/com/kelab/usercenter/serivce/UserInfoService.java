@@ -8,7 +8,8 @@ import com.kelab.info.usercenter.query.UserQuery;
 import com.kelab.usercenter.constant.enums.TimeType;
 import com.kelab.usercenter.dal.domain.UserInfoDomain;
 import com.kelab.usercenter.result.LoginResult;
-import com.kelab.usercenter.result.SingleResult;
+import com.kelab.info.base.SingleResult;
+import com.kelab.usercenter.result.AcSubmitResult;
 
 import java.util.List;
 
@@ -65,4 +66,9 @@ public interface UserInfoService {
      * 删除用户
      */
     void delete(Context context, List<Integer> ids);
+
+    /**
+     * 今日AC/Submit量
+     */
+    AcSubmitResult queryTodayCount(Context context);
 }

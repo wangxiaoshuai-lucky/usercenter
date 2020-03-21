@@ -1,6 +1,7 @@
 package com.kelab.usercenter.serivce.impl;
 
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.SingleResult;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.info.UserInfo;
 import com.kelab.usercenter.config.AppSetting;
@@ -12,6 +13,7 @@ import com.kelab.usercenter.serivce.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +63,15 @@ public class OnlineServiceImpl implements OnlineService {
         });
         result.setPagingList(onlineUsers);
         result.setTotal(onlineUsers.size());
+        return result;
+    }
+
+    @Override
+    public SingleResult<Long> onlineCount(Context context) {
+        // 首先刷新在线用户列表
+        redisCache.removeRangeByScore(CacheBizName.ONLINE_USER, "", -1.0, System.currentTimeMillis() / RATIO);
+        SingleResult<Long> result = new SingleResult<>();
+        result.setObj(redisCache.zCard(CacheBizName.ONLINE_USER, ""));
         return result;
     }
 }

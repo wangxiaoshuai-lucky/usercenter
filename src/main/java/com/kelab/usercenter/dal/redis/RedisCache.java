@@ -185,6 +185,15 @@ public class RedisCache {
         return Collections.emptySet();
     }
 
+    public Long zCard(CacheBizName bizName, String zSetName) {
+        try {
+            return redisTemplate.opsForZSet().zCard(bizName + zSetName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0L;
+    }
+
     public void removeRangeByScore(CacheBizName bizName, String zSetName, Double min, Double max) {
         try {
             redisTemplate.opsForZSet().removeRangeByScore(bizName + zSetName, min, max);

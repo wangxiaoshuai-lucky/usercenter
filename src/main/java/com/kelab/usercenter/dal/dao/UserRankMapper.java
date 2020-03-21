@@ -2,6 +2,7 @@ package com.kelab.usercenter.dal.dao;
 
 import com.kelab.info.base.query.PageQuery;
 import com.kelab.usercenter.dal.model.UserRankModel;
+import com.kelab.usercenter.result.AcSubmitResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,6 @@ public interface UserRankMapper {
     Integer total(@Param("timeType") Integer timeType);
 
     void delete(@Param("timeType") Integer timeType);
+
+    AcSubmitResult queryCount(@Param("timeType") Integer timeType);
 }

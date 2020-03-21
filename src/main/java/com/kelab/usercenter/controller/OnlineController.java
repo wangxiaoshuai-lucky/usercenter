@@ -46,6 +46,14 @@ public class OnlineController {
     }
 
     /**
+     * 今日AC/Submit量
+     */
+    @GetMapping("/submit/todayCount.do")
+    public JsonAndModel submitStatistic(Context context) {
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).data(userInfoService.queryTodayCount(context)).build();
+    }
+
+    /**
      * 在线用户列表
      */
     @GetMapping("/user/online.do")
@@ -54,6 +62,17 @@ public class OnlineController {
                 .data(onlineService.getOnlineUsers(context))
                 .build();
     }
+
+    /**
+     * 在线总人数
+     */
+    @GetMapping("/user/online/total.do")
+    public JsonAndModel onlineCount(Context context) {
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS)
+                .data(this.onlineService.onlineCount(context))
+                .build();
+    }
+
 
     /**
      * 刷新 token

@@ -7,6 +7,7 @@ import com.kelab.usercenter.dal.dao.UserRankMapper;
 import com.kelab.usercenter.dal.domain.UserRankDomain;
 import com.kelab.usercenter.dal.model.UserRankModel;
 import com.kelab.usercenter.dal.repo.UserRankRepo;
+import com.kelab.usercenter.result.AcSubmitResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -45,5 +46,10 @@ public class UserRankRepoImpl implements UserRankRepo {
     @Override
     public void delete(TimeType timeType) {
         userRankMapper.delete(timeType.value());
+    }
+
+    @Override
+    public AcSubmitResult queryCount(TimeType timeType) {
+        return userRankMapper.queryCount(timeType.value());
     }
 }
