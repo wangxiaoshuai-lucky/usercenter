@@ -3,6 +3,7 @@ package com.kelab.usercenter.serivce.impl;
 import cn.wzy.verifyUtils.annotation.Verify;
 import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.SingleResult;
 import com.kelab.info.base.constant.JsonWebTokenConstant;
 import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.base.query.PageQuery;
@@ -25,9 +26,8 @@ import com.kelab.usercenter.dal.repo.SiteSettingRepo;
 import com.kelab.usercenter.dal.repo.UserInfoRepo;
 import com.kelab.usercenter.dal.repo.UserLoginLogRepo;
 import com.kelab.usercenter.dal.repo.UserRankRepo;
-import com.kelab.usercenter.result.LoginResult;
-import com.kelab.info.base.SingleResult;
 import com.kelab.usercenter.result.AcSubmitResult;
+import com.kelab.usercenter.result.LoginResult;
 import com.kelab.usercenter.serivce.UserInfoService;
 import com.kelab.usercenter.support.ContextLogger;
 import com.kelab.usercenter.support.MailSender;
@@ -170,7 +170,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
         List<Integer> userIds = ranks.stream().map(UserRankDomain::getUserId).collect(Collectors.toList());
         List<UserInfoDomain> userInfoDomains = userInfoRepo.queryByIds(userIds, false);
-        Map<Integer, UserInfoDomain> userInfoDomainMap = userInfoDomains.stream().collect(Collectors.toMap(UserInfoDomain::getId, v -> v));
+        Map<Integer, UserInfoDomain> userInfoDomainMap = userInfoDomains.stream().collect(Collectors.toMap(UserInfoDomain::getId, v -> v, (v1, v2) -> v2));
         List<UserInfo> userInfos = new ArrayList<>(ranks.size());
         ranks.forEach(item -> {
             UserInfoDomain info = userInfoDomainMap.get(item.getUserId());
@@ -198,8 +198,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             // 2. 通过其他信息查询
             this.filterPageQuery(query);
             List<UserInfoDomain> userInfoDomains = userInfoRepo.queryPage(query, true);
-            List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
-            userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
+            List<UserInfo> userInfos = userInfoDomains.stream().map(UserInfoConvert::domainToInfo).collect(Collectors.toList());
             result.setPagingList(userInfos);
             result.setTotal(userInfoRepo.queryTotal(query));
         }
@@ -213,9 +212,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         if (CollectionUtils.isEmpty(userInfoDomains)) {
             return Collections.emptyList();
         }
-        List<UserInfo> userInfos = new ArrayList<>(userInfoDomains.size());
-        userInfoDomains.forEach(item -> userInfos.add(UserInfoConvert.domainToInfo(item)));
-        return userInfos;
+        return userInfoDomains.stream().map(UserInfoConvert::domainToInfo).collect(Collectors.toList());
     }
 
     @Override
@@ -321,6 +318,6 @@ public class UserInfoServiceImpl implements UserInfoService {
                         SettingsConstant.RESET_PWD_SUBJECT,
                         SettingsConstant.RESET_PWD_FRONT_END_URL,
                         SettingsConstant.RESET_PWD_MAIL_EXP));
-        return domains.stream().collect(Collectors.toMap(SiteSettingDomain::getId, SiteSettingDomain::getValue));
+        return domains.stream().collect(Collectors.toMap(SiteSettingDomain::getId, SiteSettingDomain::getValue, (v1, v2) -> v2));
     }
 }

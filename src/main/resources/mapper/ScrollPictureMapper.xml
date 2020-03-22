@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.ScrollPictureMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.ScrollPictureModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="news_title" property="newsTitle" jdbcType="VARCHAR"/>
+        <result column="news_desc" property="newsDesc" jdbcType="VARCHAR"/>
+        <result column="news_url" property="newsUrl" jdbcType="VARCHAR"/>
+        <result column="pic_url" property="picUrl" jdbcType="VARCHAR"/>
+        <result column="active" property="active" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        `id`, `news_title`, `news_desc`, `news_url`, `pic_url`, `active`
+    </sql>
+    <sql id="limit_sql">
+        limit ${(query.page - 1) * query.rows}, ${query.rows}
+    </sql>
+
+    <select id="queryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `Scroll_picture`
+        where 1 = 1
+        <if test="query.active != null">
+            and `active` = #{query.active, jdbcType=TINYINT}
+        </if>
+        <include refid="limit_sql"/>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `Scroll_picture`
+        where 1 = 1
+        <if test="query.active != null">
+            and `active` = #{query.active, jdbcType=TINYINT}
+        </if>
+    </select>
+
+    <select id="queryByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `Scroll_picture`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="delete">
+        delete from `Scroll_picture`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into  `Scroll_picture`
+        (`news_title`, `news_desc`, `news_url`, `pic_url`, `active`)
+        values
+        (#{record.newsTitle,jdbcType=VARCHAR}, #{record.newsDesc,jdbcType=VARCHAR}, #{record.newsUrl,jdbcType=VARCHAR},
+        #{record.picUrl,jdbcType=VARCHAR}, #{record.active,jdbcType=TINYINT})
+    </insert>
+
+    <update id="update">
+        update `Scroll_picture`
+        <set>
+            <if test="record.newsTitle != null">
+                `news_title` = #{record.newsTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="record.newsDesc != null">
+                `news_desc` = #{record.newsDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.newsUrl != null">
+                `news_url` = #{record.newsUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.picUrl != null">
+                `pic_url` = #{record.picUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.active != null">
+                `active` = #{record.active,jdbcType=TINYINT},
+            </if>
+        </set>
+        where `id` = #{record.id,jdbcType=INTEGER}
+    </update>
+</mapper>

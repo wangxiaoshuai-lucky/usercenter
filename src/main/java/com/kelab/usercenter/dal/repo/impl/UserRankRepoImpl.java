@@ -10,9 +10,12 @@ import com.kelab.usercenter.dal.repo.UserRankRepo;
 import com.kelab.usercenter.result.AcSubmitResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRankRepoImpl implements UserRankRepo {
@@ -28,8 +31,10 @@ public class UserRankRepoImpl implements UserRankRepo {
     @Override
     public List<UserRankDomain> queryPageByTimeType(TimeType timeType, PageQuery pageQuery) {
         List<UserRankModel> models = userRankMapper.queryPage(timeType.value(), pageQuery);
-        List<UserRankDomain> domains = new ArrayList<>(models.size());
-        models.forEach(item -> domains.add(UserRankConvert.modelToDomain(item)));
+        if (CollectionUtils.isEmpty(models)) {
+            return Collections.emptyList();
+        }
+        List<UserRankDomain> domains = models.stream().map(UserRankConvert::modelToDomain).collect(Collectors.toList());
         // 补充rank字段
         for (int i = 0; i < domains.size(); i++) {
             int preTotal = (pageQuery.getPage() - 1) * pageQuery.getRows();

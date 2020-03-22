@@ -155,6 +155,18 @@ public class RedisCache {
         return result;
     }
 
+    public boolean deleteByPre(CacheBizName bizName, Object pre) {
+        boolean result = false;
+        try {
+            Set<String> keys = redisTemplate.keys(bizName + String.valueOf(pre) + "*");
+            redisTemplate.delete(keys);
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public boolean deleteList(CacheBizName bizName, List<?> key) {
         boolean result = false;
         try {

@@ -28,6 +28,8 @@ public class AppSetting {
 
     public static String mailSender;
 
+    public static String accessFileExtend;
+
     @Value("${mail.smtp.host}")
     public void setMailHost(String mailHost) {
         AppSetting.mailHost = mailHost;
@@ -43,6 +45,10 @@ public class AppSetting {
     @Value("${mail.sender}")
     public void setMailSender(String mailSender) {
         AppSetting.mailSender = mailSender;
+    }
+    @Value("${file-upload.access-file-extend}")
+    public void setAccessFileExtend(String accessFileExtend) {
+        AppSetting.accessFileExtend = accessFileExtend;
     }
 
 

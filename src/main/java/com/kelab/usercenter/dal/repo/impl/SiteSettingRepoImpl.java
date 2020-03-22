@@ -9,8 +9,10 @@ import com.kelab.usercenter.dal.redis.RedisCache;
 import com.kelab.usercenter.dal.repo.SiteSettingRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +36,11 @@ public class SiteSettingRepoImpl implements SiteSettingRepo {
             if (models == null) {
                 return null;
             }
-            return models.stream().collect(Collectors.toMap(SiteSettingModel::getId, v -> v));
+            return models.stream().collect(Collectors.toMap(SiteSettingModel::getId, v -> v, (v1, v2) -> v2));
         });
-        List<SiteSettingDomain> domains = new ArrayList<>(siteSettings.size());
-        siteSettings.forEach(item -> domains.add(SiteSettingConvert.modelToDomain(item)));
-        return domains;
+        if (CollectionUtils.isEmpty(siteSettings)) {
+            return Collections.emptyList();
+        }
+        return siteSettings.stream().map(SiteSettingConvert::modelToDomain).collect(Collectors.toList());
     }
 }

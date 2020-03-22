@@ -18,6 +18,7 @@ import sun.rmi.runtime.Log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OnlineServiceImpl implements OnlineService {
@@ -51,8 +52,7 @@ public class OnlineServiceImpl implements OnlineService {
             result.setTotal(0);
             return result;
         }
-        List<Integer> userIds = new ArrayList<>();
-        userSet.forEach(item -> userIds.add(Integer.parseInt(item)));
+        List<Integer> userIds = userSet.stream().map(Integer::parseInt).collect(Collectors.toList());
         List<UserInfo> userInfos = userInfoService.queryByIds(context, userIds, false);
         List<OnlineUserResult> onlineUsers = new ArrayList<>();
         userInfos.forEach(item -> {

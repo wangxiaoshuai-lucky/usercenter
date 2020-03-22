@@ -45,13 +45,12 @@ public class UserInfoRepoImpl implements UserInfoRepo {
             if (dbModels == null) {
                 return null;
             }
-            return dbModels.stream().collect(Collectors.toMap(UserInfoModel::getId, v -> v));
+            return dbModels.stream().collect(Collectors.toMap(UserInfoModel::getId, v -> v, (v1, v2) -> v2));
         });
         if (CollectionUtils.isEmpty(userInfoModels)) {
             return Collections.emptyList();
         }
-        List<UserInfoDomain> domains = new ArrayList<>(userInfoModels.size());
-        userInfoModels.forEach(item -> domains.add(UserInfoConvert.modelToDomain(item)));
+        List<UserInfoDomain> domains = userInfoModels.stream().map(UserInfoConvert::modelToDomain).collect(Collectors.toList());
         if (withSubmitInfo) {
             fillUserInfoSubmitInfo(domains);
         }
@@ -62,8 +61,10 @@ public class UserInfoRepoImpl implements UserInfoRepo {
     @Verify(notNull = {"userQuery.page", "userQuery.rows"})
     public List<UserInfoDomain> queryPage(UserQuery userQuery, boolean withSubmitInfo) {
         List<UserInfoModel> models = userInfoMapper.queryPage(userQuery);
-        List<UserInfoDomain> domains = new ArrayList<>(models.size());
-        models.forEach(item -> domains.add(UserInfoConvert.modelToDomain(item)));
+        if (CollectionUtils.isEmpty(models)) {
+            return Collections.emptyList();
+        }
+        List<UserInfoDomain> domains = models.stream().map(UserInfoConvert::modelToDomain).collect(Collectors.toList());
         if (withSubmitInfo) {
             fillUserInfoSubmitInfo(domains);
         }
@@ -138,7 +139,7 @@ public class UserInfoRepoImpl implements UserInfoRepo {
         List<Integer> userIds = domains.stream().map(UserInfoDomain::getId).collect(Collectors.toList());
         List<UserSubmitInfoDomain> submitInfoDomains = userSubmitInfoRepo.queryByUserIds(userIds);
         Map<Integer, UserSubmitInfoDomain> submitInfoDomainMap =
-                submitInfoDomains.stream().collect(Collectors.toMap(UserSubmitInfoDomain::getUserId, obj -> obj));
+                submitInfoDomains.stream().collect(Collectors.toMap(UserSubmitInfoDomain::getUserId, obj -> obj, (v1, v2) -> v2));
         domains.forEach(item -> item.setSubmitInfo(submitInfoDomainMap.get(item.getId())));
     }
 

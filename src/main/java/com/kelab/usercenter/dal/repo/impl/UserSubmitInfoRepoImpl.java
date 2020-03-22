@@ -7,9 +7,12 @@ import com.kelab.usercenter.dal.model.UserSubmitInfoModel;
 import com.kelab.usercenter.dal.repo.UserSubmitInfoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserSubmitInfoRepoImpl implements UserSubmitInfoRepo {
@@ -24,9 +27,10 @@ public class UserSubmitInfoRepoImpl implements UserSubmitInfoRepo {
     @Override
     public List<UserSubmitInfoDomain> queryByUserIds(List<Integer> userId) {
         List<UserSubmitInfoModel> userSubmitInfoModels = userSubmitInfoMapper.queryByUserIds(userId);
-        List<UserSubmitInfoDomain> domains = new ArrayList<>(userSubmitInfoModels.size());
-        userSubmitInfoModels.forEach(item -> domains.add(UserSubmitInfoConvert.modelToDomain(item)));
-        return domains;
+        if (CollectionUtils.isEmpty(userSubmitInfoModels)) {
+            return Collections.emptyList();
+        }
+        return userSubmitInfoModels.stream().map(UserSubmitInfoConvert::modelToDomain).collect(Collectors.toList());
     }
 
     @Override

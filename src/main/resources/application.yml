@@ -4,7 +4,11 @@ spring:
   ## 选择运行环境
   profiles:
     active: dev
-
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
 
 ## 公共配置 ##
 server:
@@ -20,6 +24,10 @@ jwt:
   refresh_exp_millisecond: 259200000
   issuer: SwustOJ_JWT
   aud: swuster
+
+## 文件后缀名
+file-upload:
+  access-file-extend: bmp,jpg,jpeg,png,gif,pdf
 
 # mail 配置
 mail:
