@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.NewsMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.NewsModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="pic_url" property="picUrl" jdbcType="VARCHAR"/>
+        <result column="pub_time" property="pubTime" jdbcType="BIGINT"/>
+        <result column="view_num" property="viewNum" jdbcType="INTEGER"/>
+        <result column="publish_user" property="publishUser" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        `id`, `title`, `pic_url`, `pub_time`, `view_num`, `publish_user`
+    </sql>
+    <sql id="Blob_Column_List">
+        `content`
+    </sql>
+    <sql id="limit_sql">
+        limit ${(query.page - 1) * query.rows}, ${query.rows}
+    </sql>
+
+    <select id="queryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `News`
+        where 1 = 1
+        <if test="query.title != null and query.title != ''">
+            <if test="query.isTitleLike == true">
+                and `title` like concat(#{query.title, jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="query.isTitleLike == false">
+                and `title`= #{query.title, jdbcType=VARCHAR}
+            </if>
+        </if>
+        order by `pub_time`
+        <include refid="limit_sql"/>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `News`
+        where 1 = 1
+        <if test="query.title != null and query.title != ''">
+            <if test="query.isTitleLike == true">
+                and `title` like concat(#{query.title, jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="query.isTitleLike == false">
+                and `title`= #{query.title, jdbcType=VARCHAR}
+            </if>
+        </if>
+    </select>
+
+    <select id="queryByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        from `News`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="delete">
+        delete from `News`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into  `News`
+        (`title`, `content`, `pic_url`, `pub_time`, `view_num`, `publish_user`)
+        values
+        (#{record.title,jdbcType=VARCHAR}, #{record.content,jdbcType=LONGVARCHAR}, #{record.picUrl,jdbcType=VARCHAR},
+        #{record.pubTime,jdbcType=BIGINT}, #{record.viewNum,jdbcType=INTEGER}, #{record.publishUser,jdbcType=INTEGER})
+    </insert>
+
+    <update id="update">
+        update `News`
+        <set>
+            <if test="record.title != null">
+                `title` = #{record.title,jdbcType=VARCHAR},
+            </if>
+            <if test="record.content != null">
+                `content` = #{record.content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.picUrl != null">
+                `pic_url` = #{record.picUrl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where `id` = #{record.id,jdbcType=INTEGER}
+    </update>
+
+    <update id="addViewNumber">
+        update `News`
+        set `view_num` = `view_num` + 1
+        where `id` = #{id, jdbcType=INTEGER}
+    </update>
+</mapper>
