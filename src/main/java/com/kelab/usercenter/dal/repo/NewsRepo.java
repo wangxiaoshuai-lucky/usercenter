@@ -44,7 +44,7 @@ public interface NewsRepo {
     /**
      * 访问量+1
      * 此时运行小小的延迟
-     * 增加访问量不刷新缓存
+     * 增加访问量不刷新分页缓存
      */
     void addViewNumber(Integer id);
 }

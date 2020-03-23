@@ -93,7 +93,7 @@ public class ScrollPictureRepoImpl implements ScrollPictureRepo {
     @Override
     public void delete(List<Integer> ids) {
         scrollPictureMapper.delete(ids);
-        redisCache.delete(CacheBizName.SCROLL_PICTURE, ids);
+        redisCache.deleteList(CacheBizName.SCROLL_PICTURE, ids);
         cleanPageCache();
     }
 

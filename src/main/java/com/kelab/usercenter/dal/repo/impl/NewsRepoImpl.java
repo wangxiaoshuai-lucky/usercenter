@@ -101,13 +101,14 @@ public class NewsRepoImpl implements NewsRepo {
     @Override
     public void delete(List<Integer> ids) {
         newsMapper.delete(ids);
-        redisCache.delete(CacheBizName.NEWS, ids);
+        redisCache.deleteList(CacheBizName.NEWS, ids);
         cleanPageCache();
     }
 
     @Override
     public void addViewNumber(Integer id) {
         newsMapper.addViewNumber(id);
+        redisCache.delete(CacheBizName.NEWS, id);
     }
 
     /**
