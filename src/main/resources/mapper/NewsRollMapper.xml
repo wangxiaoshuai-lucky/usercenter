@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.NewsRollMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.NewsRollModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="pub_time" property="pubTime" jdbcType="BIGINT"/>
+        <result column="active" property="active" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        `id`, `content`, `pub_time`, `active`
+    </sql>
+    <sql id="limit_sql">
+        limit ${(query.page - 1) * query.rows}, ${query.rows}
+    </sql>
+
+    <select id="queryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `News_roll`
+        where 1 = 1
+        <if test="query.active != null">
+            and `active` = #{query.active, jdbcType=TINYINT}
+        </if>
+        order by `pub_time` desc
+        <include refid="limit_sql"/>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `News_roll`
+        where 1 = 1
+        <if test="query.active != null">
+            and `active` = #{query.active, jdbcType=TINYINT}
+        </if>
+    </select>
+
+    <select id="queryByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `News_roll`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="delete">
+        delete from `News_roll`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into  `News_roll`
+        (`content`, `pub_time`, `active`)
+        values
+        (#{record.content,jdbcType=LONGVARCHAR}, #{record.pubTime,jdbcType=BIGINT}, #{record.active,jdbcType=TINYINT})
+    </insert>
+
+    <update id="update">
+        update `News_roll`
+        <set>
+            <if test="record.content != null">
+                `content` = #{record.content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.active != null">
+                `active` = #{record.active,jdbcType=TINYINT},
+            </if>
+        </set>
+        where `id` = #{record.id,jdbcType=INTEGER}
+    </update>
+</mapper>

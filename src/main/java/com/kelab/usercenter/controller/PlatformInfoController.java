@@ -6,10 +6,13 @@ import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.info.NewsInfo;
+import com.kelab.info.usercenter.info.NewsRollInfo;
 import com.kelab.info.usercenter.info.ScrollPictureInfo;
 import com.kelab.info.usercenter.query.NewsQuery;
+import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
 import com.kelab.usercenter.convert.NewsConvert;
+import com.kelab.usercenter.convert.NewsRollConvert;
 import com.kelab.usercenter.convert.ScrollPictureConvert;
 import com.kelab.usercenter.serivce.PlatformInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -92,7 +95,7 @@ public class PlatformInfoController {
      */
     @PostMapping("/news.do")
     @Verify(notNull = {"record.title", "record.content", "record.picUrl", "context.operatorId"})
-    public JsonAndModel saveScrollPicture(Context context, @RequestBody NewsInfo record) {
+    public JsonAndModel saveNews(Context context, @RequestBody NewsInfo record) {
         platformInfoService.saveNews(context, NewsConvert.infoToDomain(record));
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
@@ -114,6 +117,47 @@ public class PlatformInfoController {
     @Verify(notNull = "id")
     public JsonAndModel updateNewsViewNum(Context context, Integer id) {
         platformInfoService.addViewNumber(id);
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 查询新闻
+     */
+    @GetMapping("/newsroll.do")
+    @Verify(numberLimit = {"query.page [1, 100000]", "query.rows [1, 100000]"})
+    public JsonAndModel queryNewsRollPage(Context context, NewsRollQuery query) {
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS)
+                .data(platformInfoService.queryNewsRollPage(context, query))
+                .build();
+    }
+
+    /**
+     * 更新通知
+     */
+    @PutMapping("/newsroll.do")
+    @Verify(notNull = "record.id")
+    public JsonAndModel updateNewsRoll(Context context, @RequestBody NewsRollInfo record) {
+        platformInfoService.updateNewsRoll(context, NewsRollConvert.infoToDomain(record));
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 添加通知
+     */
+    @PostMapping("/newsroll.do")
+    @Verify(notNull = {"record.active", "record.content", "context.operatorId"})
+    public JsonAndModel saveNewsRoll(Context context, @RequestBody NewsRollInfo record) {
+        platformInfoService.saveNewsRoll(context, NewsRollConvert.infoToDomain(record));
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 删除通知
+     */
+    @DeleteMapping("/newsroll.do")
+    @Verify(sizeLimit = "ids [1, 200]")
+    public JsonAndModel deleteNewsRoll(Context context, List<Integer> ids) {
+        platformInfoService.deleteNewsRoll(context, ids);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
 

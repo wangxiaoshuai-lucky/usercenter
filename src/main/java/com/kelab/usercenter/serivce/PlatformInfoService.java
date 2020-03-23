@@ -3,10 +3,13 @@ package com.kelab.usercenter.serivce;
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.info.NewsInfo;
+import com.kelab.info.usercenter.info.NewsRollInfo;
 import com.kelab.info.usercenter.info.ScrollPictureInfo;
 import com.kelab.info.usercenter.query.NewsQuery;
+import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
 import com.kelab.usercenter.dal.domain.NewsDomain;
+import com.kelab.usercenter.dal.domain.NewsRollDomain;
 import com.kelab.usercenter.dal.domain.ScrollPictureDomain;
 
 import java.util.List;
@@ -60,4 +63,24 @@ public interface PlatformInfoService {
      * 访问量+1
      */
     void addViewNumber(Integer id);
+
+    /**
+     * 查询通知
+     */
+    PaginationResult<NewsRollInfo> queryNewsRollPage(Context context, NewsRollQuery query);
+
+    /**
+     * 添加通知
+     */
+    void saveNewsRoll(Context context, NewsRollDomain record);
+
+    /**
+     * 更新通知
+     */
+    void updateNewsRoll(Context context, NewsRollDomain record);
+
+    /**
+     * 添加通知
+     */
+    void deleteNewsRoll(Context context, List<Integer> ids);
 }

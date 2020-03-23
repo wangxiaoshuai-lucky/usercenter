@@ -33,7 +33,7 @@
                 and `title`= #{query.title, jdbcType=VARCHAR}
             </if>
         </if>
-        order by `pub_time`
+        order by `pub_time` desc
         <include refid="limit_sql"/>
     </select>
 

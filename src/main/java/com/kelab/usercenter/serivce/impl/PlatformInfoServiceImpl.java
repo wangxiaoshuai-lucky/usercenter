@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.info.NewsInfo;
+import com.kelab.info.usercenter.info.NewsRollInfo;
 import com.kelab.info.usercenter.info.ScrollPictureInfo;
 import com.kelab.info.usercenter.query.NewsQuery;
+import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
 import com.kelab.usercenter.convert.NewsConvert;
+import com.kelab.usercenter.convert.NewsRollConvert;
 import com.kelab.usercenter.convert.ScrollPictureConvert;
 import com.kelab.usercenter.dal.domain.NewsDomain;
+import com.kelab.usercenter.dal.domain.NewsRollDomain;
 import com.kelab.usercenter.dal.domain.ScrollPictureDomain;
 import com.kelab.usercenter.dal.repo.NewsRepo;
+import com.kelab.usercenter.dal.repo.NewsRollRepo;
 import com.kelab.usercenter.dal.repo.ScrollPictureRepo;
 import com.kelab.usercenter.serivce.PlatformInfoService;
 import com.kelab.usercenter.support.ContextLogger;
@@ -30,13 +35,17 @@ public class PlatformInfoServiceImpl implements PlatformInfoService {
 
     private ScrollPictureRepo scrollPictureRepo;
 
+    private NewsRollRepo newsRollRepo;
+
     private NewsRepo newsRepo;
 
     public PlatformInfoServiceImpl(ContextLogger contextLogger,
                                    ScrollPictureRepo scrollPictureRepo,
+                                   NewsRollRepo newsRollRepo,
                                    NewsRepo newsRepo) {
         this.contextLogger = contextLogger;
         this.scrollPictureRepo = scrollPictureRepo;
+        this.newsRollRepo = newsRollRepo;
         this.newsRepo = newsRepo;
     }
 
@@ -114,11 +123,52 @@ public class PlatformInfoServiceImpl implements PlatformInfoService {
         newsRepo.addViewNumber(id);
     }
 
+    @Override
+    public PaginationResult<NewsRollInfo> queryNewsRollPage(Context context, NewsRollQuery query) {
+        PaginationResult<NewsRollInfo> result = new PaginationResult<>();
+        List<Integer> totalIds = CommonService.totalIds(query);
+        if (!CollectionUtils.isEmpty(totalIds)) {
+            List<NewsRollDomain> domains = newsRollRepo.queryByIds(totalIds);
+            result.setPagingList(newsRollDomainToInfo(domains));
+            result.setTotal(domains.size());
+        } else {
+            List<NewsRollDomain> domains = newsRollRepo.queryPage(query);
+            result.setPagingList(newsRollDomainToInfo(domains));
+            result.setTotal(newsRollRepo.queryTotal(query));
+        }
+        return result;
+    }
+
+    @Override
+    public void saveNewsRoll(Context context, NewsRollDomain record) {
+        record.setPubTime(System.currentTimeMillis());
+        newsRollRepo.save(record);
+    }
+
+    @Override
+    public void updateNewsRoll(Context context, NewsRollDomain record) {
+        newsRollRepo.update(record);
+    }
+
+    @Override
+    public void deleteNewsRoll(Context context, List<Integer> ids) {
+        List<NewsRollDomain> old = newsRollRepo.queryByIds(ids);
+        newsRollRepo.delete(ids);
+        contextLogger.info(context, "删除通知：%s", JSON.toJSONString(old));
+    }
+
     private List<ScrollPictureInfo> scrollPictureDomainToInfo(List<ScrollPictureDomain> domains) {
         if (CollectionUtils.isEmpty(domains)) {
             return Collections.emptyList();
         }
         return domains.stream().map(ScrollPictureConvert::domainToInfo).collect(Collectors.toList());
+    }
+
+    private List<NewsRollInfo> newsRollDomainToInfo(List<NewsRollDomain> domains) {
+        if (CollectionUtils.isEmpty(domains)) {
+            return Collections.emptyList();
+        }
+        return domains.stream().map(NewsRollConvert::domainToInfo).collect(Collectors.toList());
     }
 
     private List<NewsInfo> newsDomainToInfo(List<NewsDomain> domains) {
