@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.AboutMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.AboutModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="about_name" property="aboutName" jdbcType="VARCHAR"/>
+        <result column="about_content" property="aboutContent" jdbcType="LONGVARCHAR"/>
+        <result column="about_title" property="aboutTitle" jdbcType="VARCHAR"/>
+        <result column="about_icon" property="aboutIcon" jdbcType="VARCHAR"/>
+        <result column="about_order" property="aboutOrder" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        `id`, `about_name`,`about_content`, `about_title`, `about_icon`, `about_order`
+    </sql>
+    <sql id="limit_sql">
+        limit ${(query.page - 1) * query.rows}, ${query.rows}
+    </sql>
+
+    <select id="queryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `About`
+        order by `about_order` desc
+        <include refid="limit_sql"/>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `About`
+    </select>
+
+    <select id="queryByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `About`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="queryPreRecord" resultMap="BaseResultMap">
+        select
+        `id`, `about_order`
+        from `About`
+        where `about_order` &gt; #{order, jdbcType=INTEGER}
+        order by `about_order` asc
+        limit 1
+    </select>
+    <select id="queryNextRecord" resultMap="BaseResultMap">
+        select
+        `id`, `about_order`
+        from `About`
+        where `about_order` &lt; #{order, jdbcType=INTEGER}
+        order by `about_order` desc
+        limit 1
+    </select>
+
+    <delete id="delete">
+        delete from `About`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into  `About`
+        (`about_name`,`about_content`, `about_title`,
+        `about_icon`, `about_order`)
+        values
+        (#{record.aboutName,jdbcType=VARCHAR}, #{record.aboutContent,jdbcType=LONGVARCHAR}, #{record.aboutTitle,jdbcType=VARCHAR},
+        #{record.aboutIcon,jdbcType=VARCHAR}, #{record.aboutOrder,jdbcType=INTEGER})
+    </insert>
+
+    <update id="update">
+        update `About`
+        <set>
+            <if test="record.aboutName != null">
+                `about_name` = #{record.aboutName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.aboutContent != null">
+                `about_content` = #{record.aboutContent,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.aboutTitle != null">
+                `about_title` = #{record.aboutTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="record.aboutIcon != null">
+                `about_icon` = #{record.aboutIcon,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where `id` = #{record.id,jdbcType=INTEGER}
+    </update>
+    <update id="changeOrder">
+        update `About`
+        set `about_order` = #{order1} where `id` = #{id1};
+        update `About`
+        set `about_order` = #{order2} where `id` = #{id2};
+    </update>
+</mapper>

@@ -2,24 +2,27 @@ package com.kelab.usercenter.serivce.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.query.BaseQuery;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.info.NewsInfo;
-import com.kelab.info.usercenter.info.NewsRollInfo;
-import com.kelab.info.usercenter.info.ScrollPictureInfo;
+import com.kelab.info.usercenter.info.*;
 import com.kelab.info.usercenter.query.NewsQuery;
 import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
+import com.kelab.usercenter.convert.AboutConvert;
 import com.kelab.usercenter.convert.NewsConvert;
 import com.kelab.usercenter.convert.NewsRollConvert;
 import com.kelab.usercenter.convert.ScrollPictureConvert;
+import com.kelab.usercenter.dal.domain.AboutDomain;
 import com.kelab.usercenter.dal.domain.NewsDomain;
 import com.kelab.usercenter.dal.domain.NewsRollDomain;
 import com.kelab.usercenter.dal.domain.ScrollPictureDomain;
+import com.kelab.usercenter.dal.repo.AboutRepo;
 import com.kelab.usercenter.dal.repo.NewsRepo;
 import com.kelab.usercenter.dal.repo.NewsRollRepo;
 import com.kelab.usercenter.dal.repo.ScrollPictureRepo;
 import com.kelab.usercenter.serivce.PlatformInfoService;
 import com.kelab.usercenter.support.ContextLogger;
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -39,14 +42,18 @@ public class PlatformInfoServiceImpl implements PlatformInfoService {
 
     private NewsRepo newsRepo;
 
+    private AboutRepo aboutRepo;
+
     public PlatformInfoServiceImpl(ContextLogger contextLogger,
                                    ScrollPictureRepo scrollPictureRepo,
                                    NewsRollRepo newsRollRepo,
-                                   NewsRepo newsRepo) {
+                                   NewsRepo newsRepo,
+                                   AboutRepo aboutRepo) {
         this.contextLogger = contextLogger;
         this.scrollPictureRepo = scrollPictureRepo;
         this.newsRollRepo = newsRollRepo;
         this.newsRepo = newsRepo;
+        this.aboutRepo = aboutRepo;
     }
 
     @Override
@@ -157,6 +164,44 @@ public class PlatformInfoServiceImpl implements PlatformInfoService {
         contextLogger.info(context, "删除通知：%s", JSON.toJSONString(old));
     }
 
+    @Override
+    public PaginationResult<AboutInfo> queryAboutPage(Context context, BaseQuery query) {
+        PaginationResult<AboutInfo> result = new PaginationResult<>();
+        List<Integer> totalIds = CommonService.totalIds(query);
+        if (!CollectionUtils.isEmpty(totalIds)) {
+            List<AboutDomain> domains = aboutRepo.queryByIds(totalIds);
+            result.setPagingList(aboutDomainToInfo(domains));
+            result.setTotal(domains.size());
+        } else {
+            List<AboutDomain> domains = aboutRepo.queryPage(query);
+            result.setPagingList(aboutDomainToInfo(domains));
+            result.setTotal(aboutRepo.queryTotal());
+        }
+        return result;
+    }
+
+    @Override
+    public void saveAbout(Context context, AboutDomain record) {
+        aboutRepo.save(record);
+    }
+
+    @Override
+    public void updateAbout(Context context, AboutDomain record) {
+        aboutRepo.update(record);
+    }
+
+    @Override
+    public void deleteAbout(Context context, List<Integer> ids) {
+        List<AboutDomain> old = aboutRepo.queryByIds(ids);
+        aboutRepo.delete(ids);
+        contextLogger.info(context, "删除关于：%s", JSON.toJSONString(old));
+    }
+
+    @Override
+    public void changeAboutOrder(Context context, ChangeOrderInfo record) {
+        aboutRepo.changeAboutOrder(record);
+    }
+
     private List<ScrollPictureInfo> scrollPictureDomainToInfo(List<ScrollPictureDomain> domains) {
         if (CollectionUtils.isEmpty(domains)) {
             return Collections.emptyList();
@@ -169,6 +214,13 @@ public class PlatformInfoServiceImpl implements PlatformInfoService {
             return Collections.emptyList();
         }
         return domains.stream().map(NewsRollConvert::domainToInfo).collect(Collectors.toList());
+    }
+
+    private List<AboutInfo> aboutDomainToInfo(List<AboutDomain> domains) {
+        if (CollectionUtils.isEmpty(domains)) {
+            return Collections.emptyList();
+        }
+        return domains.stream().map(AboutConvert::domainToInfo).collect(Collectors.toList());
     }
 
     private List<NewsInfo> newsDomainToInfo(List<NewsDomain> domains) {

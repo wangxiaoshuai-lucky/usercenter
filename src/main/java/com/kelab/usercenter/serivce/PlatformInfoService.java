@@ -1,13 +1,13 @@
 package com.kelab.usercenter.serivce;
 
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.query.BaseQuery;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.info.NewsInfo;
-import com.kelab.info.usercenter.info.NewsRollInfo;
-import com.kelab.info.usercenter.info.ScrollPictureInfo;
+import com.kelab.info.usercenter.info.*;
 import com.kelab.info.usercenter.query.NewsQuery;
 import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
+import com.kelab.usercenter.dal.domain.AboutDomain;
 import com.kelab.usercenter.dal.domain.NewsDomain;
 import com.kelab.usercenter.dal.domain.NewsRollDomain;
 import com.kelab.usercenter.dal.domain.ScrollPictureDomain;
@@ -35,7 +35,7 @@ public interface PlatformInfoService {
     void updateScrollPicture(Context context, ScrollPictureDomain record);
 
     /**
-     * 添加轮播图
+     * 删除轮播图
      */
     void deleteScrollPicture(Context context, List<Integer> ids);
 
@@ -55,7 +55,7 @@ public interface PlatformInfoService {
     void updateNews(Context context, NewsDomain record);
 
     /**
-     * 添加新闻
+     * 删除新闻
      */
     void deleteNews(Context context, List<Integer> ids);
 
@@ -80,7 +80,32 @@ public interface PlatformInfoService {
     void updateNewsRoll(Context context, NewsRollDomain record);
 
     /**
-     * 添加通知
+     * 删除通知
      */
     void deleteNewsRoll(Context context, List<Integer> ids);
+
+    /**
+     * 查询关于
+     */
+    PaginationResult<AboutInfo> queryAboutPage(Context context, BaseQuery query);
+
+    /**
+     * 添加关于
+     */
+    void saveAbout(Context context, AboutDomain record);
+
+    /**
+     * 更新关于
+     */
+    void updateAbout(Context context, AboutDomain record);
+
+    /**
+     * 添加通知
+     */
+    void deleteAbout(Context context, List<Integer> ids);
+
+    /**
+     * 更新关于顺序
+     */
+    void changeAboutOrder(Context context, ChangeOrderInfo record);
 }

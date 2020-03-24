@@ -4,13 +4,13 @@ package com.kelab.usercenter.controller;
 import cn.wzy.verifyUtils.annotation.Verify;
 import com.kelab.info.base.JsonAndModel;
 import com.kelab.info.base.constant.StatusMsgConstant;
+import com.kelab.info.base.query.BaseQuery;
 import com.kelab.info.context.Context;
-import com.kelab.info.usercenter.info.NewsInfo;
-import com.kelab.info.usercenter.info.NewsRollInfo;
-import com.kelab.info.usercenter.info.ScrollPictureInfo;
+import com.kelab.info.usercenter.info.*;
 import com.kelab.info.usercenter.query.NewsQuery;
 import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
+import com.kelab.usercenter.convert.AboutConvert;
 import com.kelab.usercenter.convert.NewsConvert;
 import com.kelab.usercenter.convert.NewsRollConvert;
 import com.kelab.usercenter.convert.ScrollPictureConvert;
@@ -158,6 +158,57 @@ public class PlatformInfoController {
     @Verify(sizeLimit = "ids [1, 200]")
     public JsonAndModel deleteNewsRoll(Context context, List<Integer> ids) {
         platformInfoService.deleteNewsRoll(context, ids);
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 查询关于
+     */
+    @GetMapping("/about.do")
+    @Verify(numberLimit = {"query.page [1, 100000]", "query.rows [1, 100000]"})
+    public JsonAndModel queryAboutPage(Context context, BaseQuery query) {
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS)
+                .data(platformInfoService.queryAboutPage(context, query))
+                .build();
+    }
+
+    /**
+     * 更新关于
+     */
+    @PutMapping("/about.do")
+    @Verify(notNull = "record.id")
+    public JsonAndModel updateAbout(Context context, @RequestBody AboutInfo record) {
+        platformInfoService.updateAbout(context, AboutConvert.infoToDomain(record));
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 添加关于
+     */
+    @PostMapping("/about.do")
+    @Verify(notNull = {"record.aboutName", "record.aboutTitle", "record.aboutContent", "record.aboutIcon"})
+    public JsonAndModel saveAbout(Context context, @RequestBody AboutInfo record) {
+        platformInfoService.saveAbout(context, AboutConvert.infoToDomain(record));
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 删除关于
+     */
+    @DeleteMapping("/about.do")
+    @Verify(sizeLimit = "ids [1, 200]")
+    public JsonAndModel deleteAbout(Context context, List<Integer> ids) {
+        platformInfoService.deleteAbout(context, ids);
+        return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
+    }
+
+    /**
+     * 更新关于的顺序
+     */
+    @PutMapping("/about/order.do")
+    @Verify(notNull = "record.id")
+    public JsonAndModel changeAboutOrder(Context context, @RequestBody ChangeOrderInfo record) {
+        platformInfoService.changeAboutOrder(context, record);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
 
