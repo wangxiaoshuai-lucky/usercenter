@@ -15,7 +15,6 @@ public class UserCenterApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(UserCenterApplication.class, args);
-        System.out.println("#### 配置文件加载完毕 ：" + new AppSetting());
     }
 
 }

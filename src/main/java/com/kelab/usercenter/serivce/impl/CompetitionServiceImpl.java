@@ -2,14 +2,21 @@ package com.kelab.usercenter.serivce.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.kelab.info.base.PaginationResult;
+import com.kelab.info.base.constant.StatusMsgConstant;
 import com.kelab.info.base.query.BaseQuery;
 import com.kelab.info.context.Context;
 import com.kelab.info.usercenter.info.CompetitionInfo;
+import com.kelab.info.usercenter.info.CompetitionTeamStudentInfo;
+import com.kelab.info.usercenter.query.CompetitionTeamQuery;
+import com.kelab.usercenter.constant.enums.CompetitionTeamStatus;
 import com.kelab.usercenter.convert.CompetitionConvert;
 import com.kelab.usercenter.dal.domain.CompetitionDomain;
+import com.kelab.usercenter.dal.domain.CompetitionTeamDomain;
+import com.kelab.usercenter.dal.domain.CompetitionTeamStudentDomain;
 import com.kelab.usercenter.dal.repo.CompetitionRepo;
 import com.kelab.usercenter.serivce.CompetitionService;
 import com.kelab.usercenter.support.ContextLogger;
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -53,7 +60,7 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     @Override
     public void updateCompetition(Context context, CompetitionDomain record) {
-        competitionRepo.update(record);
+        competitionRepo.updateTeam(record);
     }
 
     @Override
@@ -63,7 +70,43 @@ public class CompetitionServiceImpl implements CompetitionService {
         contextLogger.info(context, "删除竞赛：%s", JSON.toJSONString(old));
     }
 
+    @Override
+    public PaginationResult<CompetitionTeamStudentInfo> queryTeamPage(Context context, CompetitionTeamQuery query) {
+        PaginationResult<CompetitionTeamStudentInfo> result = new PaginationResult<>();
+        result.setPagingList(teamStudentDomainToInfo(competitionRepo.queryTeamPage(query)));
+        result.setTotal(competitionRepo.queryTeamTotal(query));
+        return result;
+    }
+
+    @Override
+    public String saveTeam(Context context, CompetitionTeamStudentDomain record) {
+        CompetitionTeamDomain team = record.getTeamInfoDomain();
+        List<CompetitionDomain> competitions = competitionRepo.queryByIds(Collections.singletonList(team.getCompetitionId()));
+        if (CollectionUtils.isEmpty(competitions) || BooleanUtils.isNotTrue(competitions.get(0).getActive())) {
+            return StatusMsgConstant.COMPETITION_NOT_EXIST_OR_CLOSE;
+        }
+        if (competitionRepo.queryTotalByName(team.getCompetitionId(), team.getTeamName()) > 0) {
+            return StatusMsgConstant.TEAM_IS_EXISTED;
+        }
+        // 默认为等待
+        team.setStatus(CompetitionTeamStatus.PENDING);
+        competitionRepo.saveTeamInfo(record);
+        return StatusMsgConstant.SUCCESS;
+    }
+
+    @Override
+    public void updateTeam(Context context, CompetitionTeamDomain record) {
+        competitionRepo.updateTeam(record);
+    }
+
     private List<CompetitionInfo> competitionDomainToInfo(List<CompetitionDomain> domains) {
+        if (CollectionUtils.isEmpty(domains)) {
+            return Collections.emptyList();
+        }
+        return domains.stream().map(CompetitionConvert::domainToInfo).collect(Collectors.toList());
+    }
+
+    private List<CompetitionTeamStudentInfo> teamStudentDomainToInfo(List<CompetitionTeamStudentDomain> domains) {
         if (CollectionUtils.isEmpty(domains)) {
             return Collections.emptyList();
         }

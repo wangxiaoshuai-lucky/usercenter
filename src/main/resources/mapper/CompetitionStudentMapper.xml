@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.CompetitionStudentMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.CompetitionStudentModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="stu_name" property="stuName" jdbcType="VARCHAR"/>
+        <result column="stu_num" property="stuNum" jdbcType="VARCHAR"/>
+        <result column="stu_class" property="stuClass" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="college" property="college" jdbcType="VARCHAR"/>
+        <result column="team_id" property="teamId" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+       `id`, `stu_name`, `stu_num`, `stu_class`, `size`, `phone`, `sex`, `college`, `team_id`
+    </sql>
+
+    <select id="queryByTeamIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `Competition_student`
+        where `team_id` in
+        <foreach collection="teamIds" item="item"
+                 open="(" separator="," close=")">
+            #{item, jdbcType=INTEGER}
+        </foreach>
+    </select>
+
+    <insert id="insertList">
+        insert into `Competition_student`
+        (`stu_name`, `stu_num`, `stu_class`, `size`, `phone`, `sex`, `college`, `team_id`)
+        values
+        <foreach collection="records" item="item" separator=",">
+            (
+            #{item.stuName},
+            #{item.stuNum},
+            #{item.stuClass},
+            #{item.size},
+            #{item.phone},
+            #{item.sex},
+            #{item.college},
+            #{item.teamId}
+            )
+        </foreach>
+    </insert>
+</mapper>

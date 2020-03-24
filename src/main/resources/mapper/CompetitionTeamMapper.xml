@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.CompetitionTeamMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.CompetitionTeamModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="competition_id" property="competitionId" jdbcType="INTEGER"/>
+        <result column="team_name" property="teamName" jdbcType="VARCHAR"/>
+        <result column="teacher" property="teacher" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        `id`, `competition_id`, `team_name`, `teacher`, `status`
+    </sql>
+
+    <sql id="limit_sql">
+        limit ${(query.page - 1) * query.rows}, ${query.rows}
+    </sql>
+
+    <select id="queryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `Competition_team`
+        where `competition_id` = #{query.competitionId, jdbcType=INTEGER}
+        <include refid="limit_sql"/>
+    </select>
+    <select id="queryTeamTotal" resultType="java.lang.Integer">
+      select
+      count(*)
+      from `Competition_team`
+      where `competition_id` = #{query.competitionId, jdbcType=INTEGER}
+  </select>
+    <select id="queryTotalByName" resultType="java.lang.Integer">
+        select
+      count(*)
+      from `Competition_team`
+      where `competition_id` = #{competitionId, jdbcType=INTEGER}
+      and `team_name` like concat(#{teamName, jdbcType=VARCHAR}, '%')
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into `Competition_team`
+        (`team_name`, `competition_id`, `teacher`, `status`)
+        values
+        (#{record.teamName, jdbcType=VARCHAR}, #{record.competitionId, jdbcType=INTEGER},
+         #{record.teacher, jdbcType=VARCHAR}, #{record.status, jdbcType=TINYINT})
+    </insert>
+
+    <update id="update">
+        update `Competition_team`
+        set `status` = #{record.status, jdbcType=TINYINT}
+        where `id` = #{record.id, jdbcType=INTEGER}
+    </update>
+</mapper>

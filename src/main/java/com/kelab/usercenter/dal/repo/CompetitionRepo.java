@@ -1,7 +1,10 @@
 package com.kelab.usercenter.dal.repo;
 
 import com.kelab.info.base.query.BaseQuery;
+import com.kelab.info.usercenter.query.CompetitionTeamQuery;
 import com.kelab.usercenter.dal.domain.CompetitionDomain;
+import com.kelab.usercenter.dal.domain.CompetitionTeamDomain;
+import com.kelab.usercenter.dal.domain.CompetitionTeamStudentDomain;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -28,7 +31,7 @@ public interface CompetitionRepo {
     /**
      * 更新
      */
-    void update(CompetitionDomain domain);
+    void updateTeam(CompetitionDomain domain);
 
     /**
      * 添加
@@ -39,4 +42,29 @@ public interface CompetitionRepo {
      * 删除
      */
     void delete(List<Integer> ids);
+
+    /**
+     * 分页查询竞赛团队
+     */
+    List<CompetitionTeamStudentDomain> queryTeamPage(CompetitionTeamQuery query);
+
+    /**
+     * 查询团队个数
+     */
+    Integer queryTeamTotal(CompetitionTeamQuery query);
+
+    /**
+     * 保存队伍信息
+     */
+    void saveTeamInfo(CompetitionTeamStudentDomain record);
+
+    /**
+     * 查重
+     */
+    Integer queryTotalByName(Integer competitionId, String teamName);
+
+    /**
+     * 审核团队
+     */
+    void updateTeam(CompetitionTeamDomain record);
 }
