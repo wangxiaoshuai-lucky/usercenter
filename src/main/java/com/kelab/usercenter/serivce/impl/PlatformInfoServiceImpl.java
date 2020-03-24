@@ -181,6 +181,16 @@ public class PlatformInfoServiceImpl implements PlatformInfoService {
 
     @Override
     public void saveAbout(Context context, AboutDomain record) {
+        // 查找最新的一条数据, 这里用queryPage访问，可以走之前的缓存
+        BaseQuery query = new BaseQuery();
+        query.setPage(1);
+        query.setRows(10);
+        List<AboutDomain> domains = this.aboutRepo.queryPage(query);
+        if (CollectionUtils.isEmpty(domains)) {
+            record.setAboutOrder(1);
+        } else {
+            record.setAboutOrder(domains.get(0).getAboutOrder() + 1);
+        }
         aboutRepo.save(record);
     }
 
