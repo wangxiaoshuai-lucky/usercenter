@@ -22,7 +22,6 @@ import com.kelab.usercenter.dal.repo.NewsRollRepo;
 import com.kelab.usercenter.dal.repo.ScrollPictureRepo;
 import com.kelab.usercenter.serivce.PlatformInfoService;
 import com.kelab.usercenter.support.ContextLogger;
-import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 

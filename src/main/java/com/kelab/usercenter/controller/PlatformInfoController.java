@@ -64,7 +64,7 @@ public class PlatformInfoController {
      */
     @DeleteMapping("/scrollPicture.do")
     @Verify(sizeLimit = "ids [1, 200]")
-    public JsonAndModel deleteScrollPicture(Context context, List<Integer> ids) {
+    public JsonAndModel deleteScrollPicture(Context context, @RequestParam("ids") List<Integer> ids) {
         platformInfoService.deleteScrollPicture(context, ids);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
@@ -105,7 +105,7 @@ public class PlatformInfoController {
      */
     @DeleteMapping("/news.do")
     @Verify(sizeLimit = "ids [1, 200]")
-    public JsonAndModel deleteNews(Context context, List<Integer> ids) {
+    public JsonAndModel deleteNews(Context context, @RequestParam("ids") List<Integer> ids) {
         platformInfoService.deleteNews(context, ids);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
@@ -156,7 +156,7 @@ public class PlatformInfoController {
      */
     @DeleteMapping("/newsroll.do")
     @Verify(sizeLimit = "ids [1, 200]")
-    public JsonAndModel deleteNewsRoll(Context context, List<Integer> ids) {
+    public JsonAndModel deleteNewsRoll(Context context, @RequestParam("ids") List<Integer> ids) {
         platformInfoService.deleteNewsRoll(context, ids);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }
@@ -197,7 +197,7 @@ public class PlatformInfoController {
      */
     @DeleteMapping("/about.do")
     @Verify(sizeLimit = "ids [1, 200]")
-    public JsonAndModel deleteAbout(Context context, List<Integer> ids) {
+    public JsonAndModel deleteAbout(Context context, @RequestParam("ids") List<Integer> ids) {
         platformInfoService.deleteAbout(context, ids);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }

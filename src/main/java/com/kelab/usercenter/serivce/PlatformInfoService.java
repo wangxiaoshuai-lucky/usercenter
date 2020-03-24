@@ -7,10 +7,7 @@ import com.kelab.info.usercenter.info.*;
 import com.kelab.info.usercenter.query.NewsQuery;
 import com.kelab.info.usercenter.query.NewsRollQuery;
 import com.kelab.info.usercenter.query.ScrollPictureQuery;
-import com.kelab.usercenter.dal.domain.AboutDomain;
-import com.kelab.usercenter.dal.domain.NewsDomain;
-import com.kelab.usercenter.dal.domain.NewsRollDomain;
-import com.kelab.usercenter.dal.domain.ScrollPictureDomain;
+import com.kelab.usercenter.dal.domain.*;
 
 import java.util.List;
 
@@ -100,7 +97,7 @@ public interface PlatformInfoService {
     void updateAbout(Context context, AboutDomain record);
 
     /**
-     * 添加通知
+     * 删除关于
      */
     void deleteAbout(Context context, List<Integer> ids);
 

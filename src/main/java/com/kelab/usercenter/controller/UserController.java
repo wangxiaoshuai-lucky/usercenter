@@ -19,7 +19,6 @@ import com.kelab.util.token.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,13 +126,8 @@ public class UserController {
      * 删除用户
      */
     @DeleteMapping("/user.do")
-    @Verify(notNull = {"uiids"})
-    public JsonAndModel delete(Context context, String uiids) {
-        String[] strIds = uiids.split(",");
-        List<Integer> ids = new ArrayList<>(strIds.length);
-        for (String str : strIds) {
-            ids.add(Integer.parseInt(str));
-        }
+    @Verify(sizeLimit = "ids [1, 200]")
+    public JsonAndModel delete(Context context, @RequestParam("ids") List<Integer> ids) {
         userInfoService.delete(context, ids);
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS).build();
     }

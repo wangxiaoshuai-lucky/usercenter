@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.CompetitionMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.CompetitionModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="description" property="description" jdbcType="LONGVARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="active" property="active" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        `id`, `title`,`description`, `active`
+    </sql>
+    <sql id="limit_sql">
+        limit ${(query.page - 1) * query.rows}, ${query.rows}
+    </sql>
+
+    <select id="queryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `Competition`
+        order by `id` desc
+        <include refid="limit_sql"/>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `Competition`
+    </select>
+
+    <select id="queryByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `Competition`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="delete">
+        delete from `Competition`
+        where `id` in
+        <foreach collection="ids" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into  `Competition`
+        (`title`,`description`, `active`)
+        values
+        (#{record.title,jdbcType=VARCHAR}, #{record.description,jdbcType=LONGVARCHAR}, #{record.active,jdbcType=TINYINT})
+    </insert>
+
+    <update id="update">
+        update `Competition`
+        <set>
+            <if test="record.title != null">
+                `title` = #{record.title,jdbcType=VARCHAR},
+            </if>
+            <if test="record.description != null">
+                `description` = #{record.description,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.active != null">
+                `active` = #{record.active,jdbcType=TINYINT},
+            </if>
+        </set>
+        where `id` = #{record.id,jdbcType=INTEGER}
+    </update>
+</mapper>
