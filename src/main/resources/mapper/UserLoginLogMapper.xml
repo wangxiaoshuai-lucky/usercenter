@@ -4,15 +4,41 @@
     <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.UserLoginLogModel">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
-        <result column="login_time" property="loginTime" jdbcType="INTEGER"/>
+        <result column="login_time" property="loginTime" jdbcType="BIGINT"/>
     </resultMap>
     <sql id="Base_Column_List">
         `id`, `user_id`, `login_time`
     </sql>
 
     <insert id="save" parameterType="com.kelab.usercenter.dal.model.UserLoginLogModel">
-        insert into `User_login_log` (`id`, `user_id`, `login_time`)
-        values (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.loginTime,jdbcType=BIGINT})
+        insert into `User_login_log` (`user_id`, `login_time`)
+        values (#{record.userId,jdbcType=INTEGER}, #{record.loginTime,jdbcType=BIGINT})
     </insert>
 
+    <resultMap id="OnlineStatisticResultMap" type="com.kelab.info.usercenter.info.OnlineStatisticResult">
+        <result column="time" property="time" jdbcType="VARCHAR"/>
+        <result column="total_login" property="totalLogin" jdbcType="INTEGER"/>
+        <result column="submit_ac" property="submitAc" jdbcType="INTEGER"/>
+        <result column="submit_all" property="submitAll" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="countDay" resultMap="OnlineStatisticResultMap">
+        SELECT
+        FROM_UNIXTIME(`login_time` / 1000, '%H') AS time,
+		count(*) AS total_login
+        FROM
+        `User_login_log`
+        WHERE
+        `login_time` BETWEEN #{startTime} AND #{endTime}
+        GROUP BY
+        FROM_UNIXTIME(`login_time` / 1000, '%H')
+    </select>
+    <select id="countByRange" resultType="java.lang.Integer">
+        SELECT
+		count(*)
+        FROM
+        `User_login_log`
+        WHERE
+        `login_time` BETWEEN #{startTime} AND #{endTime}
+    </select>
 </mapper>

@@ -55,6 +55,10 @@ public class UserRankRepoImpl implements UserRankRepo {
 
     @Override
     public AcSubmitResult queryCount(TimeType timeType) {
-        return userRankMapper.queryCount(timeType.value());
+        AcSubmitResult result = userRankMapper.queryCount(timeType.value());
+        if (result == null) {
+            result = new AcSubmitResult(0, 0);
+        }
+        return result;
     }
 }

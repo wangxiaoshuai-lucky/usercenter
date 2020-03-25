@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -88,6 +89,17 @@ public class OnlineController {
         return JsonAndModel.builder(StatusMsgConstant.SUCCESS)
                 .token(refreshToken(context, userInfo))
                 .build();
+    }
+
+    /**
+     * 登录，ac,submit 走势图
+     */
+    @GetMapping("/online.do")
+    @Verify(notNull = "*")
+    public JsonAndModel queryOnlineStatistic(Context context, Integer type) {
+       return JsonAndModel.builder(StatusMsgConstant.SUCCESS)
+               .data(onlineService.queryOnlineStatistic(context, type))
+               .build();
     }
 
     private String refreshToken(Context context, UserInfo userInfo) {

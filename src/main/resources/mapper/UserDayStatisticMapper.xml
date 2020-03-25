@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kelab.usercenter.dal.dao.UserDayStatisticMapper">
+    <resultMap id="BaseResultMap" type="com.kelab.usercenter.dal.model.UserDayStatisticModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="ac_num" property="acNum" jdbcType="INTEGER"/>
+        <result column="submit_num" property="submitNum" jdbcType="INTEGER"/>
+        <result column="login_num" property="loginNum" jdbcType="INTEGER"/>
+        <result column="record_time" property="recordTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <insert id="save">
+        insert into `User_day_statistic`
+        (`ac_num`, `submit_num`, `login_num`, `record_time`)
+        values
+        (#{record.acNum,jdbcType=INTEGER}, #{record.submitNum,jdbcType=INTEGER},
+        #{record.loginNum,jdbcType=INTEGER}, #{record.recordTime,jdbcType=BIGINT})
+    </insert>
+
+    <resultMap id="OnlineStatisticResultMap" type="com.kelab.info.usercenter.info.OnlineStatisticResult">
+        <result column="time" property="time" jdbcType="VARCHAR"/>
+        <result column="total_login" property="totalLogin" jdbcType="INTEGER"/>
+        <result column="submit_ac" property="submitAc" jdbcType="INTEGER"/>
+        <result column="submit_all" property="submitAll" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="countMonth" resultMap="OnlineStatisticResultMap">
+        SELECT
+        FROM_UNIXTIME(`record_time` / 1000, '%m-%d') AS time,
+        sum(`ac_num`) AS submit_ac,
+		sum(`login_num`) AS total_login,
+		sum(`submit_num`) AS submit_all
+        FROM
+        `User_day_statistic`
+        WHERE
+        `record_time` BETWEEN #{startTime} AND #{endTime}
+        GROUP BY
+        FROM_UNIXTIME(`record_time` / 1000, '%m-%d')
+    </select>
+
+    <select id="countYear" resultMap="OnlineStatisticResultMap">
+        SELECT
+        FROM_UNIXTIME(`record_time` / 1000, '%y-%m') AS time,
+        sum(`ac_num`) AS submit_ac,
+		sum(`login_num`) AS total_login,
+		sum(`submit_num`) AS submit_all
+        FROM
+        `User_day_statistic`
+        WHERE
+        `record_time` BETWEEN #{startTime} AND #{endTime}
+        GROUP BY
+        FROM_UNIXTIME(`record_time` / 1000, '%y-%m')
+    </select>
+
+</mapper>

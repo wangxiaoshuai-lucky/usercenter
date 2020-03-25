@@ -55,9 +55,9 @@ public class RedisTests {
         for (int i = 0; i < 10; i++) {
             String name = "thread" + i;
             new Thread(()->{
-                if (redisLock.lock(DistributeKey.ONLINE_USER_KEY, name, 1000, 2)) {
+                if (redisLock.lock(DistributeKey.USER_DAY_STATISTIC, name, 1000, 2)) {
                     System.out.println(name + "获取到锁");
-                    redisLock.unLock(DistributeKey.ONLINE_USER_KEY, name);
+                    redisLock.unLock(DistributeKey.USER_DAY_STATISTIC, name);
                 } else {
                     System.out.println("发生冲突.....");
                 }

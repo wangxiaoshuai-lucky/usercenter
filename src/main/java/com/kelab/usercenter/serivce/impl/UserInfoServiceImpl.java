@@ -251,11 +251,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public AcSubmitResult queryTodayCount(Context context) {
-        AcSubmitResult result = userRankRepo.queryCount(TimeType.DAY);
-        if (result == null) {
-            result = new AcSubmitResult(0, 0);
-        }
-        return result;
+        return userRankRepo.queryCount(TimeType.DAY);
     }
 
     private List<Integer> totalIds(UserQuery query) {

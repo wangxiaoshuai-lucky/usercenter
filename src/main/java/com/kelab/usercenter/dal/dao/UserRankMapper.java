@@ -1,6 +1,7 @@
 package com.kelab.usercenter.dal.dao;
 
 import com.kelab.info.base.query.PageQuery;
+import com.kelab.info.usercenter.info.OnlineStatisticResult;
 import com.kelab.usercenter.dal.model.UserRankModel;
 import com.kelab.usercenter.result.AcSubmitResult;
 import org.apache.ibatis.annotations.Mapper;
