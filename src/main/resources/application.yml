@@ -15,6 +15,15 @@ server:
   port: 8763
   servlet:
     context-path: /usercenter
+
+#feign 的超时时间
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 10000
+        read-timeout: 20000
+
 # jwt 配置
 jwt:
   secret_key: ok332shyuasdf
