@@ -105,6 +105,15 @@ public class CompetitionController {
     }
 
     /**
+     * 导出比赛团队信息
+     */
+    @GetMapping("/competition/export.do")
+    @Verify(notNull = "*")
+    public Object downloadTeamMessage(Context context, @RequestParam Integer competitionId) {
+        return competitionService.downloadTeamMessage(context, competitionId);
+    }
+
+    /**
      * 检查队员参数
      */
     private void checkStudentInfoList(List<CompetitionStudentInfo> records) {

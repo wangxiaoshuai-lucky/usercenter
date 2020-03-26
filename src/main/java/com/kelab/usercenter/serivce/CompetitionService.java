@@ -10,6 +10,7 @@ import com.kelab.info.usercenter.query.CompetitionTeamQuery;
 import com.kelab.usercenter.dal.domain.CompetitionDomain;
 import com.kelab.usercenter.dal.domain.CompetitionTeamDomain;
 import com.kelab.usercenter.dal.domain.CompetitionTeamStudentDomain;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -50,4 +51,9 @@ public interface CompetitionService {
      * 由于本人能力不够，现在只能修改状态
      */
     void updateTeam(Context context, CompetitionTeamDomain record);
+
+    /**
+     * 下载比赛队伍信息
+     */
+    ResponseEntity<byte[]> downloadTeamMessage(Context context, int competitionId);
 }
