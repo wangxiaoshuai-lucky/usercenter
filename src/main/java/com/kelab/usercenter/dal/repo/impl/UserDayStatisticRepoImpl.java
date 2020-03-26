@@ -63,7 +63,7 @@ public class UserDayStatisticRepoImpl implements UserDayStatisticRepo {
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime().getTime();
+        return calendar.getTimeInMillis();
     }
 
     private long getPreMonthZeroTime() {
@@ -72,7 +72,7 @@ public class UserDayStatisticRepoImpl implements UserDayStatisticRepo {
                 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.MONTH, -1);
-        return calendar.getTime().getTime();
+        return calendar.getTimeInMillis();
     }
 
     private long getPreYearZeroTime() {
@@ -81,6 +81,6 @@ public class UserDayStatisticRepoImpl implements UserDayStatisticRepo {
                 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.YEAR, -1);
-        return calendar.getTime().getTime();
+        return calendar.getTimeInMillis();
     }
 }
