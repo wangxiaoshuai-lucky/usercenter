@@ -96,7 +96,7 @@
         <include refid="limit_sql"/>
     </select>
 
-    <select id="queryTotal" resultMap="BaseResultMap">
+    <select id="queryTotal" resultType="java.lang.Integer">
         select
         count(*)
         from `User_info` `ui`
