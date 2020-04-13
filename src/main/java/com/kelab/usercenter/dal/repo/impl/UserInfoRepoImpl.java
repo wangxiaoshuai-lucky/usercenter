@@ -114,11 +114,6 @@ public class UserInfoRepoImpl implements UserInfoRepo {
         userInfoMapper.updateByIdSelective(userInfoModel);
         // 删除缓存
         redisCache.delete(CacheBizName.USER_INFO, userInfoDomain.getId());
-        // 更新submitInfo
-        UserSubmitInfoDomain userSubmitInfoDomain = userInfoDomain.getSubmitInfo();
-        if (userSubmitInfoDomain != null) {
-            userSubmitInfoRepo.update(userSubmitInfoDomain);
-        }
     }
 
     @Override

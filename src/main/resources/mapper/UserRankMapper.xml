@@ -38,6 +38,31 @@
         where `time_type` = #{timeType,jdbcType=INTEGER}
     </select>
 
+    <select id="queryByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `User_rank`
+        where `user_id` = #{userId}
+    </select>
+
+    <update id="update">
+        update `User_rank`
+        set `submit_num` = `submit_num` + 1
+        <if test="ac == true">
+            `ac_num` = `ac_num` + 1
+        </if>
+        where `user_id` = #{userId}
+    </update>
+
+    <insert id="initUserRank">
+        insert into `User_rank`
+        (`user_id`, `ac_num`, `submit_num`, `time_type`)
+        values
+        <foreach collection="types" item="item" separator=",">
+            (#{userId}, 0, 0, #{item})
+        </foreach>
+    </insert>
+
     <delete id="delete">
         delete from `User_rank` where `time_type` = #{timeType,jdbcType=INTEGER}
     </delete>

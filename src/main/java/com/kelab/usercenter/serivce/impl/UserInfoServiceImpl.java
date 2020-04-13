@@ -22,10 +22,7 @@ import com.kelab.usercenter.dal.domain.UserRankDomain;
 import com.kelab.usercenter.dal.domain.UserSubmitInfoDomain;
 import com.kelab.usercenter.dal.model.UserLoginLogModel;
 import com.kelab.usercenter.dal.redis.RedisCache;
-import com.kelab.usercenter.dal.repo.SiteSettingRepo;
-import com.kelab.usercenter.dal.repo.UserInfoRepo;
-import com.kelab.usercenter.dal.repo.UserLoginLogRepo;
-import com.kelab.usercenter.dal.repo.UserRankRepo;
+import com.kelab.usercenter.dal.repo.*;
 import com.kelab.usercenter.result.AcSubmitResult;
 import com.kelab.usercenter.result.LoginResult;
 import com.kelab.usercenter.serivce.UserInfoService;
@@ -53,6 +50,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     private UserRankRepo userRankRepo;
 
+    private UserSubmitInfoRepo userSubmitInfoRepo;
+
     private SiteSettingRepo siteSettingRepo;
 
     private RedisCache redisCache;
@@ -63,12 +62,14 @@ public class UserInfoServiceImpl implements UserInfoService {
     public UserInfoServiceImpl(ContextLogger log,
                                UserInfoRepo userInfoRepo,
                                UserRankRepo userRankRepo,
+                               UserSubmitInfoRepo userSubmitInfoRepo,
                                SiteSettingRepo siteSettingRepo,
                                RedisCache redisCache,
                                UserLoginLogRepo userLoginLogRepo) {
         this.log = log;
         this.userInfoRepo = userInfoRepo;
         this.userRankRepo = userRankRepo;
+        this.userSubmitInfoRepo = userSubmitInfoRepo;
         this.siteSettingRepo = siteSettingRepo;
         this.redisCache = redisCache;
         this.userLoginLogRepo = userLoginLogRepo;
@@ -252,6 +253,13 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public AcSubmitResult queryTodayCount(Context context) {
         return userRankRepo.queryCount(TimeType.DAY);
+    }
+
+    @Override
+    public void judgeCallback(Context context, Integer userId, boolean ac) {
+        userRankRepo.checkAndInit(userId);
+        userRankRepo.update(userId, ac);
+        userSubmitInfoRepo.update(userId, ac);
     }
 
     private List<Integer> totalIds(UserQuery query) {

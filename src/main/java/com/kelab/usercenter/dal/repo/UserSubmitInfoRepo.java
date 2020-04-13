@@ -17,9 +17,9 @@ public interface UserSubmitInfoRepo {
     void save(UserSubmitInfoDomain record);
 
     /**
-     * 插入用户的提交记录
+     * 更新用户的提交记录
      */
-    void update(UserSubmitInfoDomain record);
+    void update(Integer userId, boolean ac);
 
     /**
      * 删除用户的提交数据

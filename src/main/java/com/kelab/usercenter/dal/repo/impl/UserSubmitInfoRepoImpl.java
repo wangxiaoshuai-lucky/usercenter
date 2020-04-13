@@ -40,8 +40,8 @@ public class UserSubmitInfoRepoImpl implements UserSubmitInfoRepo {
     }
 
     @Override
-    public void update(UserSubmitInfoDomain record) {
-        userSubmitInfoMapper.updateByUserId(UserSubmitInfoConvert.domainToModel(record));
+    public void update(Integer userId, boolean ac) {
+        userSubmitInfoMapper.updateByUserId(userId, ac);
     }
 
     @Override

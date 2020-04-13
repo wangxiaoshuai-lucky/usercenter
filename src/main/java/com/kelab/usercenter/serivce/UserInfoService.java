@@ -71,4 +71,9 @@ public interface UserInfoService {
      * 今日AC/Submit量
      */
     AcSubmitResult queryTodayCount(Context context);
+
+    /**
+     * 判题结果更新
+     */
+    void judgeCallback(Context context, Integer userId, boolean ac);
 }

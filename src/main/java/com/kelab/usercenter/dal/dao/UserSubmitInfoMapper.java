@@ -13,7 +13,7 @@ public interface UserSubmitInfoMapper {
 
     Integer save(@Param("record") UserSubmitInfoModel record);
 
-    void updateByUserId(@Param("record") UserSubmitInfoModel record);
+    void updateByUserId(@Param("userId")Integer userId, @Param("ac")boolean ac);
 
     void delete(@Param("userIds") List<Integer> userIds);
 }

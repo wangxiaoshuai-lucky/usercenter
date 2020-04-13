@@ -24,4 +24,11 @@ public class InnerController {
     public List<UserInfo> queryByIds(Context context, @RequestParam(value = "ids") List<Integer> ids) {
         return userInfoService.queryByIds(context, ids, false);
     }
+
+    @GetMapping("/inner/judgeCallback")
+    @Verify(notNull = "*")
+    public Object judgeCallback(Context context, Integer userId, boolean ac) {
+        userInfoService.judgeCallback(context, userId, ac);
+        return "ok";
+    }
 }

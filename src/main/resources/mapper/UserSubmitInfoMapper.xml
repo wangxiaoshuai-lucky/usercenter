@@ -24,14 +24,10 @@
 
     <update id="updateByUserId" parameterType="com.kelab.usercenter.dal.model.UserSubmitInfoModel">
         update `User_submit_info`
-        <set>
-            <if test="record.acNum != null">
-                `ac_num` = #{record.acNum, jdbcType=INTEGER},
-            </if>
-            <if test="record.submitNum != null">
-                `submit_num` = #{record.submitNum, jdbcType=INTEGER},
-            </if>
-        </set>
+        set `submit_num` = `submit_num` + 1
+        <if test="ac == true">
+            , `ac_num` = `ac_num` + 1
+        </if>
         where `user_id` = #{record.userId, jdbcType=INTEGER}
     </update>
 

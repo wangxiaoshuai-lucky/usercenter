@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -41,6 +42,26 @@ public class UserRankRepoImpl implements UserRankRepo {
             domains.get(i).setRank(i + preTotal + 1);
         }
         return domains;
+    }
+
+    @Override
+    public void update(Integer userId, boolean ac) {
+        userRankMapper.update(userId, ac);
+    }
+
+    @Override
+    public void checkAndInit(Integer userId) {
+        List<UserRankModel> userRankModels = userRankMapper.queryByUserId(userId);
+        Set<Integer> typeSet = userRankModels.stream().map(UserRankModel::getTimeType).collect(Collectors.toSet());
+        List<Integer> types = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            if (!typeSet.contains(i)) {
+                types.add(i);
+            }
+        }
+        if (types.size() != 0) {
+            userRankMapper.initUserRank(userId, types);
+        }
     }
 
     @Override
