@@ -28,7 +28,7 @@
         <if test="ac == true">
             , `ac_num` = `ac_num` + 1
         </if>
-        where `user_id` = #{record.userId, jdbcType=INTEGER}
+        where `user_id` = #{userId}
     </update>
 
 

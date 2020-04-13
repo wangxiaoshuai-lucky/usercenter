@@ -49,7 +49,7 @@
         update `User_rank`
         set `submit_num` = `submit_num` + 1
         <if test="ac == true">
-            `ac_num` = `ac_num` + 1
+            , `ac_num` = `ac_num` + 1
         </if>
         where `user_id` = #{userId}
     </update>
