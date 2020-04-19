@@ -175,7 +175,7 @@ public class CompetitionServiceImpl implements CompetitionService {
                         sheet.addCell(new Label(++col, row, student.getStuClass()));
                         sheet.addCell(new Label(++col, row, student.getSize()));
                         sheet.addCell(new Label(++col, row, student.getPhone()));
-                        sheet.addCell(new Label(++col, row, student.getSize().equals("0") ? "女" : "男"));
+                        sheet.addCell(new Label(++col, row, student.getSex().equals(0) ? "女" : "男"));
                         sheet.addCell(new Label(++col, row, student.getCollege()));
                     }
                 }
