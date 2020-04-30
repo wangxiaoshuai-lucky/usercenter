@@ -31,4 +31,4 @@ fdfs:
     width: 150
     height: 150
   tracker-list:
-    - wangzhengyu.cn:22122
+    - 192.168.0.97:22122
